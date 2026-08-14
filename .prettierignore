@@ -39,3 +39,11 @@ Thumbs.db
 
 # Generated files
 next-env.d.ts
+
+# Agent and tool runtime metadata
+.claude/
+.omc/
+.opencode/
+.serena/
+**/AGENTS.md
+docs/guides/
