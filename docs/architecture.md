@@ -1,151 +1,156 @@
-# Architecture
+# 아키텍처
 
-이 저장소는 한국어 Next.js App Router 스타터입니다. 현재는 정적 소개 화면과 미완성 로그인·회원가입 UI를 제공하며, 한국 수출입 데이터를 기반으로 투자 인사이트를 제공하는 제품의 데이터·도메인·운영 계층은 아직 구현되어 있지 않습니다.
+이 저장소는 한국어 Next.js App Router 기반의 정적 UI 기준선입니다. 현재는 소개 페이지와 로그인·회원가입 폼 UI만 제공하며, ETF MVP의 데이터 처리, 영속 저장, 외부 연동, 인증 백엔드, Route Handler, 예약 작업은 구현되어 있지 않습니다.
 
-## Bird's Eye View
+본 문서의 ETF MVP 대상 구조는 `docs/PRD.md`에 근거한 **계획**입니다. W1 데이터·권한 Go/No-Go를 통과하기 전에는 어떤 데이터 접근 방식이나 운영 기반도 확정하거나 구현된 것으로 간주하지 않습니다.
 
-현재 애플리케이션은 브라우저 요청을 Next.js 페이지로 렌더링하고, 공통 레이아웃과 shadcn/ui 기반 컴포넌트를 조합해 응답합니다. 영속 데이터, 외부 API 호출, Route Handler, 인증 백엔드, 배치 작업은 없습니다.
+## 전체 구조
 
-```text
-Browser request → App Router page → layout/section component composition → HTML/CSS response
-```
-
-목표 제품에서는 아래처럼 두 흐름을 분리해야 합니다.
+### 현재 기준선
 
 ```text
-관세청 원천 XML → 수집 작업 → 검증·정규화 DB → 집계/지표 → Server Component·API 응답 → 대시보드
-사용자 요청 ────────────────────────────────────────────────────────────────────────────────┘
+브라우저 요청 → App Router 페이지 → 레이아웃·섹션 컴포넌트 조립 → HTML/CSS 응답
 ```
 
-## Entry Points
+### 계획된 ETF MVP 구조 (미구현)
 
-- `package.json:5` — `npm run dev`, `npm run build`, `npm run start`가 Next.js 프로세스를 시작합니다.
-- `src/app/layout.tsx:23` — 모든 App Router 경로의 루트 레이아웃이며 폰트, 테마 Provider, 토스트를 조립합니다.
-- `src/app/page.tsx:7` — `/`의 논리적 진입점입니다. 현재는 정적 랜딩 페이지입니다.
-- `src/app/login/page.tsx:10`, `src/app/signup/page.tsx:3` — 인증 화면의 논리적 진입점입니다. 실제 인증 API는 연결되어 있지 않습니다.
+```text
+승인된 데이터 소스 또는 CSV 대체 경로
+  → 원본 as-of 스냅샷·작업 로그
+  → 검증·정규화
+  → ETF·산업·규칙 도메인 모델
+  → Server Component 또는 내부 읽기 API
+  → Data Status / Sector Board / ETF Compare / Guide & Paper
+```
 
-## Code Map
+이 흐름은 특정 저장소, ORM, 작업 플랫폼 또는 공급자 계약을 전제하지 않습니다. W1에서 소스별 사용 권한, 기준일 재현성, 필수 필드 완전성, CSV 대체 가능성을 확인한 뒤에만 세부 구현 방식을 결정합니다.
+
+## 진입점
+
+- `package.json` — `npm run dev`, `npm run build`, `npm run start`가 Next.js 프로세스를 시작합니다.
+- `src/app/layout.tsx` — 모든 App Router 경로의 루트 레이아웃입니다. 폰트, 테마 Provider, 토스트를 조립합니다.
+- `src/app/page.tsx` — `/`의 진입점이며 정적 랜딩 페이지를 렌더링합니다.
+- `src/app/login/page.tsx`, `src/app/signup/page.tsx` — 로그인과 회원가입 UI의 진입점입니다. 인증 API나 세션 처리는 연결되어 있지 않습니다.
+
+## 코드 맵
 
 ### `src/app/`
 
-**API Boundary:** Next.js 파일 시스템 라우팅 경계입니다. `page.tsx`와 `layout.tsx`의 형태는 프레임워크 계약에 의해 정해집니다.
+Next.js 파일 시스템 라우팅 경계입니다. 현재 `/`, `/login`, `/signup`만 존재하고 Route Handler는 없습니다. `page.tsx`와 `layout.tsx`는 프레임워크 계약에 따라 렌더링을 담당합니다.
 
-현재 `/`, `/login`, `/signup`만 존재하며, `src/app/page.tsx:7`은 정적 섹션을 조립합니다. `src/app/layout.tsx:17`의 메타데이터와 `:29`의 `lang="ko"`가 전역 문서 계약입니다.
-
-**Architecture Invariant:** 페이지는 기본적으로 Server Component로 유지하고, 브라우저 상태가 필요한 부분만 클라이언트 컴포넌트로 분리합니다. 데이터 조회를 서버에서 유지해 비밀값과 데이터 접근 권한이 브라우저 번들에 섞이지 않게 합니다.
+**불변 조건:** 페이지는 기본적으로 Server Component로 유지하고, 브라우저 상태가 필요한 부분만 클라이언트 컴포넌트로 분리합니다.
 
 ### `src/components/`
 
-내부 전용 프레젠테이션 계층입니다. `layout/`은 페이지 셸, `sections/`는 랜딩 섹션, `navigation/`은 메뉴, `ui/`는 shadcn/ui 프리미티브, `providers/`는 외부 Provider의 클라이언트 경계입니다.
+프레젠테이션 계층입니다. `layout/`은 페이지 셸, `sections/`는 랜딩 섹션, `navigation/`은 메뉴, `ui/`는 shadcn/ui 프리미티브, `providers/`는 클라이언트 Provider 경계입니다.
 
-`src/components/layout/header.tsx:14`와 `src/components/navigation/main-nav.tsx:16`은 브라우저 상태를 사용하므로 클라이언트 컴포넌트입니다. 반면 `src/components/sections/hero.tsx:4`는 정적 Server Component입니다.
-
-**Architecture Invariant:** `components/ui/`는 도메인 규칙이나 데이터 접근을 포함하지 않습니다. 이 계층은 재사용 가능한 표시 규칙만 제공해야 대시보드·차트·테이블이 동일한 도메인 모델을 독립적으로 소비할 수 있습니다.
+**불변 조건:** `components/ui/`에는 ETF 판단 규칙이나 데이터 접근을 넣지 않습니다. UI는 도메인 결과를 표시하는 역할에 한정합니다.
 
 ### `src/lib/`
 
-내부 전용 공통 유틸리티 계층입니다. `src/lib/utils.ts`는 스타일 클래스 결합을, `src/lib/env.ts:3`은 Zod로 환경 변수를 검증합니다.
+공통 유틸리티 계층입니다. `src/lib/utils.ts`는 클래스 이름 결합을 제공하고, `src/lib/env.ts`는 현재 환경 변수(`NODE_ENV`, `VERCEL_URL`, `NEXT_PUBLIC_APP_URL`)만 검증합니다.
 
-**API Boundary:** `src/lib/env.ts:11`은 배포 환경과 애플리케이션 사이의 구성 경계입니다. 현재 공개 앱 URL만 모델링하며, 수집 API 키·데이터베이스 URL·작업 인증 토큰은 아직 이 경계에 정의되지 않았습니다.
-
-**Architecture Invariant:** 서버 비밀값은 `NEXT_PUBLIC_` 접두사를 사용하지 않고 `env`를 통해서만 읽습니다. 이 규칙이 깨지면 수집 API 키 또는 데이터베이스 자격 증명이 클라이언트에 노출될 수 있습니다.
+**경계:** 향후 서버 전용 비밀값이 필요해지면 `env`를 통해 읽고 `NEXT_PUBLIC_` 접두사를 사용하지 않습니다. 현재 수집 자격 증명이나 실행 토큰은 정의되어 있지 않습니다.
 
 ### `docs/`
 
-개발 가이드와 외부 API 메모를 보관합니다. `docs/gw-api.md`는 관세청 Newtrade XML 엔드포인트를 기록하지만, 실제 수집 코드는 없습니다. 인증키는 문서나 Git에 보관하지 않고 배포 환경의 비밀 변수로 관리해야 합니다.
+제품 계획과 개발 문서를 보관합니다. ETF MVP의 제품 범위, G0~G4, 데이터 원칙, W1 및 W8 판정 기준은 `docs/PRD.md`가 기준입니다.
 
 ### `package.json`
 
-빌드·정적 검사 명령과 런타임 의존성을 정의합니다. 현재 데이터베이스 ORM, 마이그레이션, 작업 큐/스케줄러, 차트 라이브러리, 테스트 러너는 의존성에 없습니다.
+빌드와 정적 검사 명령, 현재 런타임 의존성을 정의합니다. 데이터 저장 계층, ORM, 마이그레이션 도구, 작업 큐·스케줄러, 차트 라이브러리, 테스트 러너는 포함되어 있지 않습니다.
 
-## Data Flow
+## 데이터 흐름
 
-### Current flow
+### 현재 흐름
 
-브라우저의 `GET /` 요청은 `src/app/page.tsx:7`로 들어와 `Header`, `HeroSection`, `FeaturesSection`, `CTASection`, `Footer`를 조립하고 HTML/CSS를 반환합니다. 로그인 화면은 `src/app/login/page.tsx:10`에서 `LoginForm`을 렌더링하지만, `src/components/login-form.tsx:50`은 검증 후 `console.log`만 호출합니다. 외부 입력은 데이터 모델로 변환되거나 저장되지 않습니다.
+`GET /` 요청은 `src/app/page.tsx`에서 `Header`, `HeroSection`, `FeaturesSection`, `CTASection`, `Footer`를 조립해 HTML/CSS를 반환합니다. 로그인과 회원가입 폼은 입력 검증 UI를 제공하지만, 입력을 저장하거나 인증하지 않습니다. 외부 API 호출과 영속 데이터 모델은 없습니다.
 
-### Required product flow
+### ETF MVP 대상 흐름 (미구현)
 
-1. 스케줄러가 보호된 수집 엔드포인트 또는 별도 worker를 호출합니다.
-2. 수집 어댑터가 관세청 XML을 원본 스냅샷으로 보존하고 XML 스키마를 파싱합니다.
-3. 검증 계층이 기간, 수출입 구분, HS 코드, 통화·금액 단위를 정규화한 `TradeObservation` 도메인 모델로 변환합니다.
-4. 저장 계층이 원본 응답 식별자와 기준월을 고유 키로 사용해 중복 수집을 멱등적으로 upsert합니다.
-5. 집계 작업이 월별 증감률, 이동평균, 품목·국가별 비중 같은 파생 지표를 별도 테이블 또는 materialized view에 기록합니다.
-6. Server Component와 공개 읽기 API가 검증된 집계만 조회해 대시보드·추이 차트·인사이트를 렌더링합니다.
+1. W1에서 승인된 데이터 소스의 사용 권한과 기준일 재현 가능성을 확인합니다. 확인 실패 시 웹 개발을 중단하거나 CSV 수동 업로드 중심으로 범위를 재확정합니다.
+2. 승인된 소스 또는 CSV 업로드에서 입력을 받아 원본 값, 출처, 기준일, 수집·등록 시각을 as-of 스냅샷과 작업 로그로 남깁니다.
+3. 검증·정규화 단계에서 출처, 기준일, 결측, 중복, 형식 오류를 상태값으로 보존합니다. 결측을 0으로 바꾸지 않습니다.
+4. 검증된 입력을 산업 근거, Shadow Radar, ETF 마스터·구성 스냅샷, 위험 예산, 가이드·가상 포지션 도메인으로 연결합니다.
+5. G0~G4를 먼저 적용하고, Shadow Radar 10점 실험 점수는 후보 정렬에만 사용합니다. G0~G4와 사람 승인을 통과하지 않은 후보는 가상 편입할 수 없습니다.
+6. Server Component 또는 내부 읽기 API가 안정된 화면 모델만 제공하여 네 개의 내부 화면을 렌더링합니다.
+7. 가이드 발행 시 입력, 규칙 버전, 기준일, 승인 시각을 함께 고정합니다. 발행된 가이드와 가이드 스냅샷은 변경하지 않습니다.
 
-원천 XML과 수집 실행 기록은 ground state이며, 정규화 관측치·집계·인사이트는 재생성 가능한 derived state입니다. 현재는 캐시·색인·증분 계산 계층이 없습니다. 목표 구조에서는 기준월 또는 데이터 버전으로 파생 지표를 무효화해야 하며, 그렇지 않으면 수정 수집 후 추이가 오래된 값으로 남습니다.
+## 계획된 정보 경계
 
-## API Boundaries
+다음은 PRD P0 요구사항을 지원하기 위해 검토할 정보 경계입니다. 이는 테이블, 저장 기술, 필드 구현을 확정한 설계가 아닙니다.
 
-- **App Router UI:** `src/app/**/page.tsx`가 브라우저 요청과 렌더링 사이를 연결합니다. UI props는 내부 계약이므로 안정적인 외부 API로 취급하지 않습니다.
-- **환경 구성:** `src/lib/env.ts:3`이 배포 환경과 서버 코드 사이의 계약입니다. 서버 전용 값과 공개 URL을 엄격히 구분해야 합니다.
-- **관세청 Newtrade:** `docs/gw-api.md:2`에 기록된 외부 XML 공급자 경계입니다. 공급자 형식·제한·데이터 정정은 외부 사유로 바뀌므로 어댑터 하나에 격리해야 합니다.
-- **권장 수집 경계:** 새 `app/api/internal/ingest/route.ts` 또는 별도 worker가 스케줄러와 수집 도메인을 분리해야 합니다. 호출자는 작업 토큰으로 인증하고, 일반 사용자 세션으로 이 경계를 열지 않습니다.
-- **권장 읽기 경계:** 새 `app/api/trends/route.ts`는 프론트엔드가 필요로 하는 안정된 DTO만 반환합니다. 데이터베이스 행과 ORM 타입을 직접 노출하지 않습니다.
+| 경계             | 책임                                       | 핵심 기록                                  |
+| ---------------- | ------------------------------------------ | ------------------------------------------ |
+| 데이터 소스·입력 | 권한, 출처, 갱신 주기, CSV 대체 경로 관리  | 소스 메타데이터, 원본 as-of 스냅샷         |
+| 작업 추적        | 수집·등록 성공, 실패, 재실행 근거 보존     | 작업 상태, 사유, 실행 시각                 |
+| 산업·규칙        | Core 6, Shadow Radar, G0~G4 판단을 재현    | 근거, 반대 근거, 규칙 버전                 |
+| ETF 분석         | ETF 12~18개의 기준일별 적합성과 위험 검토  | 마스터, 구성, 비용, 유동성, 중복도         |
+| 가이드·검증      | 발행 판단과 가상 성과를 시점 기준으로 재현 | 불변 가이드 스냅샷, 가상 포지션, 평가 결과 |
 
-## Invariants
+## API 경계
 
-- **Architecture Invariant:** 페이지는 기본적으로 Server Component로 유지하고, 브라우저 상태가 필요한 부분만 클라이언트 컴포넌트로 분리합니다. 비밀값과 데이터 접근 권한을 서버에 남기기 위해서입니다.
-- **Architecture Invariant:** `components/ui/`는 도메인 규칙이나 데이터 접근을 포함하지 않습니다. 표시 계층을 유지해야 지표 계산 변경이 UI 프리미티브를 흔들지 않습니다.
-- **Architecture Invariant:** 서버 비밀값은 `NEXT_PUBLIC_` 접두사를 사용하지 않고 `env`를 통해서만 읽습니다. 비밀값이 브라우저 번들에 노출되는 것을 방지합니다.
-- **Architecture Invariant:** 동일한 원천 데이터와 기준월을 다시 수집해도 저장 결과는 하나여야 합니다. 재시도 가능한 정기 작업에서 중복 관측치가 추이와 투자 판단을 왜곡하지 않게 합니다.
-- **Architecture Invariant:** 원천 응답, 정규화 관측치, 파생 지표의 데이터 버전을 연결합니다. 공급자 정정이나 파서 수정 후 파생 지표를 재계산할 수 있게 합니다.
+- **App Router UI:** `src/app/**/page.tsx`가 브라우저 요청과 렌더링을 연결합니다. 현재는 정적 UI 경계입니다.
+- **환경 구성:** `src/lib/env.ts`가 배포 환경과 서버 코드 사이의 구성 경계입니다. 서버 전용 값과 공개 URL을 분리해야 합니다.
+- **입력 경계 (계획):** 승인된 데이터 소스와 CSV 업로드는 동일한 기준일·출처·상태 계약으로 정규화 계층에 전달되어야 합니다. 소스별 세부 계약은 W1 승인 전 확정하지 않습니다.
+- **읽기 경계 (계획):** Server Component를 우선 사용하고, 여러 화면이나 클라이언트 상호작용에 안정된 DTO가 필요할 때만 내부 읽기 API를 둡니다. 저장 형식이나 내부 규칙 객체를 직접 노출하지 않습니다.
 
-## Feature Trace
+## 아키텍처 불변 조건
+
+- 현재 구현과 계획된 구조를 혼동하지 않습니다. 계획된 데이터·도메인·운영 계층은 W1 통과 전 미구현 상태입니다.
+- Core 6은 고정 실행군이며, Shadow Radar는 사람 승인 전 매매 신호로 사용하지 않는 관찰군입니다.
+- ETF 범위는 국내 상장 ETF 12~18개로 한정하고, 레버리지형은 일반형과 별도 위험 규칙으로 다룹니다.
+- G0 데이터 품질을 통과하지 못한 입력은 점수 계산과 가이드 발행을 차단합니다. G1~G4도 순서대로 산업 근거, 가격 확인, ETF 적합성, 위험 예산을 검증합니다.
+- 동일 입력과 동일 규칙 버전은 동일 결과를 재현해야 합니다.
+- 모든 판단은 as-of 기준으로 재현합니다. 판단 시점 이후에 알려진 정보나 수정된 지표를 과거 판단에 섞지 않습니다.
+- 가이드 발행 시 출처, 기준일, 규칙 버전, 승인 시각과 필수 위험 필드를 함께 고정합니다. 발행 후 스냅샷은 변경하지 않습니다.
+- 소스 사용 권한과 재배포 가능성은 API 존재 여부와 별개입니다. W1에서 확인하지 못하면 자동화와 웹 확장을 진행하지 않습니다.
+
+## 기능 추적
 
 현재 대표 기능은 정적 홈 화면 렌더링입니다.
 
 ```text
 GET /
-  → src/app/page.tsx:7             Home()
-  → src/components/layout/header.tsx:14  Header()
-  → src/components/sections/hero.tsx:4   HeroSection()
+  → src/app/page.tsx                 Home()
+  → src/components/layout/header.tsx Header()
+  → src/components/sections/hero.tsx HeroSection()
   → src/components/sections/features.tsx FeaturesSection()
-  → src/components/sections/cta.tsx      CTASection()
-  → src/components/layout/footer.tsx     Footer()
+  → src/components/sections/cta.tsx  CTASection()
+  → src/components/layout/footer.tsx Footer()
   → HTML 응답
 ```
 
-이 흐름은 현재의 일반적인 렌더링 패턴을 잘 보여 주지만, 투자 데이터 입력·검증·저장·계산·조회는 전혀 거치지 않습니다.
+계획된 대표 업무 흐름은 `Data Status → Sector Board → ETF Compare → Guide & Paper`입니다. 이 흐름은 데이터 기준일, G0~G4, ETF 적합성, 불변 가이드 스냅샷, 가상 포지션 평가를 한 번에 추적할 수 있어야 하지만 현재는 구현되어 있지 않습니다.
 
-## Testing Strategy
+## 테스트 전략
 
-현재 별도 테스트 프레임워크나 테스트 파일은 없습니다. `package.json:13`의 TypeScript 검사, `:9`의 ESLint, `:11`의 Prettier, `:7`의 프로덕션 빌드가 정적 품질 경계를 보호합니다.
+현재 별도 테스트 러너나 테스트 파일은 없습니다. `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run build`가 현재 정적 품질 경계입니다.
 
-목표 제품에서는 다음 경계를 테스트해야 합니다.
+ETF MVP를 구현할 때는 선택한 구현 방식에 맞춰 다음 계약을 검증합니다.
 
-- XML 파서 단위 테스트: 원천 공급자 형식과 정규화 도메인 모델의 경계를 보호합니다.
-- 저장소 통합 테스트: 멱등 upsert와 기준월 정정 처리를 보호합니다.
-- 수집 Route Handler 통합 테스트: 스케줄러 인증과 실패 재시도를 보호합니다.
-- 추이 API 계약 테스트: 프론트엔드와 읽기 DTO의 호환성을 보호합니다.
-- 대시보드 E2E 테스트: 수집된 데이터가 사용자에게 올바른 기간·단위·상태로 보이는 전체 흐름을 보호합니다.
+- 입력 검증 테스트: 승인된 데이터와 CSV 대체 입력이 기준일·출처·결측·중복 상태를 일관되게 보존하는지 확인합니다.
+- 도메인 규칙 테스트: G0~G4 적용 순서, Shadow Radar 점수의 용도 제한, ETF 위험 예산 판정을 확인합니다.
+- 재현성 테스트: 동일 입력과 규칙 버전에서 동일 결과가 나오는지, 이후 정보가 섞이지 않는지 확인합니다.
+- 가이드 발행 테스트: 필수 위험 필드 누락 시 발행이 차단되고, 발행 후 스냅샷이 불변인지 확인합니다.
+- 화면 통합 테스트: 네 내부 화면에서 기준일, 데이터 상태, 근거, ETF 비교, 가상 포지션 결과가 동일한 스냅샷을 참조하는지 확인합니다.
 
-## Refactoring Risk
+## 구현 준비도와 다음 순서
 
-- `src/components/ui/`는 shadcn/ui 생성 코드이므로 도메인 로직을 추가하지 않아야 합니다.
-- `src/components/login-form.tsx:50`의 `console.log` 기반 제출은 인증 구현이 아닙니다. 실제 사용자 계정 기능으로 오인하면 안 됩니다.
-- `src/components/navigation/main-nav.tsx:12`과 모바일 메뉴는 별도의 메뉴 배열을 가질 수 있으므로 신규 대시보드 경로를 추가할 때 동기화 누락 위험이 있습니다.
-- `src/lib/env.ts:3`은 현재 서비스 비밀값을 모델링하지 않으므로 수집 기능을 넣기 전에 확장해야 합니다.
-- `docs/gw-api.md`에 평문 인증키를 저장하는 방식은 금지해야 합니다. 이미 노출된 키는 공급자 콘솔에서 회전해야 합니다.
+현재 UI 기반은 내부 화면을 추가할 수 있는 출발점이지만, 데이터 기반 ETF MVP의 구현 근거는 아직 없습니다. 착수 순서는 화면 확장이 아니라 W1 데이터·권한 검증입니다.
 
-## Readiness Assessment and Target Architecture
+1. `docs/PRD.md`의 W1 Go/No-Go 기준으로 소스별 권한, 기준일, 필수 필드, CSV 대체 가능성을 판정합니다.
+2. 통과한 입력만 대상으로 원본 as-of 스냅샷과 작업 로그의 최소 계약을 정합니다.
+3. G0~G4, Core 6, Shadow Radar, ETF 12~18개, 불변 가이드 스냅샷의 도메인 계약을 정합니다.
+4. 구현 방식이 확정된 뒤에만 내부 읽기 경계와 네 화면을 추가합니다.
+5. W8에서 재현성, 데이터 완전성, 운영 부담, 발행 안전성을 기준으로 Go, 조건부 Go, No-Go를 판정합니다.
 
-UI 기반은 적합하지만, 현재 구조만으로는 신뢰 가능한 투자 인사이트 서비스를 운영할 수 없습니다. Next.js를 BFF와 SEO 친화적 대시보드로 사용하고, 데이터 파이프라인을 다음 네 계층으로 추가하는 구성이 적합합니다.
+## 권장 읽기 순서
 
-1. **Ingestion:** 관세청 XML 어댑터, 작업 인증, 지수 백오프 재시도, 실행 이력.
-2. **Data platform:** PostgreSQL, 마이그레이션, 원본 스냅샷·정규화 관측치·파생 지표의 분리, 기준월 단위 멱등 키.
-3. **Domain and analytics:** `trade-observation`, `trend-metric`, `insight`를 UI와 독립된 서버 도메인으로 두고, 집계·해석 규칙을 버전 관리.
-4. **Delivery:** Server Component 기반 대시보드, 읽기 전용 trend API, 데이터 최신 시점·결측·정정 상태를 명시하는 UX.
-
-권장 시작 순서는 UI 대시보드가 아니라 비밀 관리와 원천 수집 계약, 데이터 스키마, 멱등 수집, 집계 검증입니다. 수집 주기는 공급자 갱신 시점과 데이터 지연을 확인한 뒤 정하되, 일정 기반 실행은 외부 스케줄러 또는 관리형 작업 플랫폼에서 트리거하고 작업 본문은 재시도 가능하게 설계합니다.
-
-## Recommended Next Reading Order
-
-1. `package.json` — 현재 실행·검사·의존성 기준선.
-2. `src/app/layout.tsx` — 전역 렌더링과 Provider 경계.
-3. `src/app/page.tsx` — 현재 페이지 조립 패턴.
-4. `src/lib/env.ts` — 환경 설정과 비밀값 경계를 확장할 위치.
-5. `docs/gw-api.md` — 외부 관세청 API의 시작점; 인증키는 환경 변수로 이동해야 함.
-6. `src/components/layout/header.tsx` — 클라이언트 상호작용 경계의 현재 패턴.
-7. `src/components/navigation/main-nav.tsx` — 대시보드 정보 구조를 연결할 현재 메뉴 위치.
-8. 새 `src/server/trade/`와 `src/app/api/internal/ingest/route.ts` — 구현 시 도입할 도메인·수집 경계.
+1. `docs/PRD.md` — MVP 범위, 데이터 원칙, G0~G4, W1/W8 판정 기준.
+2. `package.json` — 현재 실행·검사·의존성 기준선.
+3. `src/app/layout.tsx` — 전역 렌더링과 Provider 경계.
+4. `src/app/page.tsx` — 현재 홈 화면 조립 패턴.
+5. `src/app/login/page.tsx`, `src/app/signup/page.tsx` — 현재 인증 UI의 미구현 경계.
+6. `src/lib/env.ts` — 환경 설정과 서버 전용 값 경계를 확장할 위치.
+7. `src/components/layout/header.tsx`, `src/components/navigation/main-nav.tsx` — 향후 내부 화면 정보 구조를 연결할 현재 위치.
