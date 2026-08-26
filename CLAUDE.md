@@ -13,13 +13,13 @@
 
 ## 📚 개발 가이드
 
-- **🗺️ 개발 로드맵**: `@/docs/ROADMAP.md`
-- **📋 프로젝트 요구사항**: `@/docs/PRD.md`
-- **📁 프로젝트 구조**: `@/docs/guides/project-structure.md`
-- **🎨 스타일링 가이드**: `@/docs/guides/styling-guide.md`
-- **🧩 컴포넌트 패턴**: `@/docs/guides/component-patterns.md`
-- **⚡ Next.js 15.5.3 전문 가이드**: `@/docs/guides/nextjs-15.md`
-- **📝 폼 처리 완전 가이드**: `@/docs/guides/forms-react-hook-form.md`
+- **🗺️ 개발 로드맵**: `docs/ROADMAP.md`
+- **📋 프로젝트 요구사항**: `docs/PRD.md`
+- **📁 프로젝트 구조**: `docs/guides/project-structure.md`
+- **🎨 스타일링 가이드**: `docs/guides/styling-guide.md`
+- **🧩 컴포넌트 패턴**: `docs/guides/component-patterns.md`
+- **⚡ Next.js 15.5.3 전문 가이드**: `docs/guides/nextjs-15.md`
+- **📝 폼 처리 완전 가이드**: `docs/guides/forms-react-hook-form.md`
 
 ## ⚡ 자주 사용하는 명령어
 
