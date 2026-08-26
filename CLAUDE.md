@@ -45,3 +45,7 @@ npm run build       # 빌드 성공 확인
 ## 아키텍처 개요
 
 `docs/architecture.md`에 코드베이스 멘탈 모델이 정리되어 있습니다 — 진입점, Code Map, 데이터 흐름, API 경계, Architecture Invariant, 권장 읽기 순서. 비자명한 변경 전에 먼저 읽고, 경계·invariant·feature trace를 바꿨다면 같이 갱신하세요.
+
+## 문서 정책
+
+이 프로젝트는 "One Fact, One Home" 문서 정책을 따릅니다. 사실 유형별 정본(canonical) 문서 위치는 `AGENTS.md`의 "문서 정책: One Fact, One Home" 절을 참조하세요.
