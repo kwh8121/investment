@@ -2,16 +2,16 @@
 
 > 버전: v1.0  
 > 작성일: 2026-08-25  
-> 상태: DG0 승인 완료 — DG1 준비 (DG0 Approved / DG1 Preparation)  
+> 상태: DG1 준비 (DG1 Preparation) — DG0 Gate 판정 기록: `docs/plan/gates/DG0-scope-baseline.md`
 > 제품 책임자: 개인 투자 운영자  
 > 원천 계획:
 >
-> - `plan/ETF 투자 가이드 MVP 계획 v0.2.md`
-> - `plan/ETF_MVP_이후_진행_흐름_v0.1.md`
+> - `docs/plan/ETF 투자 가이드 MVP 계획 v0.2.md`
+> - `docs/plan/ETF_MVP_이후_진행_흐름_v0.1.md`
 
 ## 1. 문서 목적과 기준선
 
-이 문서는 ETF 투자 가이드 MVP가 해결할 문제, 사용자, 범위, 제품 요구사항, 품질 기준과 Go/No-Go 조건을 정의한다. 원천 계획을 제품 계약으로 구체화한 **제품 범위의 현재 권위 문서**는 본 `PRD.md`다. 구현 순서·일정·완료 증거의 권위 문서는 `ROADMAP.md`, 기술 경계와 승인된 구현 선택의 권위 문서는 `architecture.md`다.
+이 문서는 ETF 투자 가이드 MVP가 해결할 문제, 사용자, 범위, 제품 요구사항, 품질 기준과 Go/No-Go 조건을 정의한다. 원천 계획을 제품 계약으로 구체화한 **제품 범위의 현재 권위 문서**는 본 `docs/PRD.md`다. 구현 순서·일정·완료 증거의 권위 문서는 `docs/ROADMAP.md`, 기술 경계와 승인된 구현 선택의 권위 문서는 `docs/architecture.md`다.
 
 두 원천 계획이 충돌하지 않는 한 본 PRD는 해당 내용을 제품 요구사항으로 구체화한다. 이후 발견되는 데이터 제약이나 권한 문제는 조용히 범위를 바꾸지 않고 DG1 판정과 변경 이력으로 남긴다. Gate 판정 증거는 `docs/plan/gates/` 아래에 `DG{번호}-{주제}.md` 형식으로 보관한다.
 
@@ -275,7 +275,7 @@ MVP는 네 개의 제품 영역으로 구성한다. 기준 계획의 세부 화�
 7. 소스 간 불일치를 숨기지 않고 추천 발행 여부에 반영한다.
 8. 키움 수익률은 참고값이며 공식 성과는 가격·환율·분배금으로 자체 계산한다.
 
-세부 데이터 계약과 저장 기술은 DG1 통과 후 `architecture.md`와 별도 데이터 계약에서 확정한다.
+세부 데이터 계약과 저장 기술은 DG1 통과 후 `docs/architecture.md`와 별도 데이터 계약에서 확정한다.
 
 ## 10. 성공 기준
 
@@ -313,7 +313,7 @@ MVP는 네 개의 제품 영역으로 구성한다. 기준 계획의 세부 화�
 
 각 Gate 기록은 판정일, `Go / Conditional Go / No-Go` 중 하나의 판정, 근거, 미충족 항목, Owner, Approver, 예외 만료일과 재검토 날짜·트리거를 포함한다. Owner는 증거를 생성하고 Gate 제출을 준비하는 역할이며, Approver는 제출된 증거를 검토해 최종 판정을 내리는 역할이다. 초기에는 두 역할을 동일인이 겸임할 수 있으나 문서상 역할은 분리해 기록한다.
 
-> **일정 주석:** DG2 목표 시점과 원천 계획 대비 조정 근거는 `ROADMAP.md` 4장을 따른다.
+> **일정 주석:** DG2 목표 시점과 원천 계획 대비 조정 근거는 `docs/ROADMAP.md` 4장을 따른다.
 
 ## 12. 실전 전환 원칙
 
@@ -337,7 +337,7 @@ MVP는 네 개의 제품 영역으로 구성한다. 기준 계획의 세부 화�
 - 예약 실행 플랫폼 후보: 정기 수집, 재시도와 실패 알림
 - LLM: 불명확한 리서치 분류와 월간 요약의 보조 수단만 허용
 
-Supabase, Vercel과 GitHub Actions는 후보 옵션이다. 확정 여부는 DG1 이후 `architecture.md`에 기록한다.
+Supabase, Vercel과 GitHub Actions는 후보 옵션이다. 확정 여부는 DG1 이후 `docs/architecture.md`에 기록한다.
 
 ## 14. Open Questions
 
@@ -359,7 +359,7 @@ Supabase, Vercel과 GitHub Actions는 후보 옵션이다. 확정 여부는 DG1 
 - 제품 범위, 목표 시장, 전략, 위험 한도 또는 Gate를 바꾸면 PRD 버전을 올린다.
 - 점수·필터·벤치마크 변경은 적용일과 새 버전을 기록하고 과거 추천에 소급 적용하지 않는다.
 - Gate의 Conditional Go에는 예외 범위, 보완 조건과 만료일을 명시한다.
-- 구현 작업은 `ROADMAP.md`의 선행 Gate와 Acceptance Criteria를 만족해야 완료로 처리한다.
+- 구현 작업은 `docs/ROADMAP.md`의 선행 Gate와 Acceptance Criteria를 만족해야 완료로 처리한다.
 
 ## 16. 추적성
 
@@ -429,4 +429,4 @@ Supabase, Vercel과 GitHub Actions는 후보 옵션이다. 확정 여부는 DG1 
 | P0-10-AC03 | Task 011 | 사후 정보로 근거 덮어쓰기 방지(불변 스냅샷) 검증              | 제품 책임자 |
 | P0-10-AC04 | Task 014 | 동일 입력·동일 버전 재현성 검증                               | 제품 책임자 |
 
-상세 일정, 의존성과 완료 증거는 `ROADMAP.md`에서 관리하며, Task 001~014의 P0/AC 역추적표는 `ROADMAP.md` 14.1절을 참조한다.
+상세 일정, 의존성과 완료 증거는 `docs/ROADMAP.md`에서 관리하며, Task 001~014의 P0/AC 역추적표는 `docs/ROADMAP.md` 14.1절을 참조한다.
