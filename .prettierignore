@@ -47,3 +47,6 @@ next-env.d.ts
 .serena/
 **/AGENTS.md
 docs/guides/
+
+# Externally supplied reference schemas
+docs/references/kiwoom-rest-api-spec.json
