@@ -43,6 +43,7 @@ next-env.d.ts
 # Agent and tool runtime metadata
 .claude/
 .omc/
+.omx/
 .opencode/
 .serena/
 **/AGENTS.md
