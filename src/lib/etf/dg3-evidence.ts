@@ -9,6 +9,12 @@ export interface Dg3EvidenceProvenance {
   sourcePublishedAt: string
   fetchedAt: string
   observationDates: string[]
+  outcomeDates?: string[]
+  dividendEvidence?: {
+    sourceUri: string
+    sourceSha256: string
+    rawBytes: Uint8Array
+  }
 }
 
 export interface Dg3RawObservation extends BacktestObservation {
@@ -84,6 +90,21 @@ function validateRawObservation(row: Dg3RawObservation): void {
   if (!provenance.sourceUri.trim()) {
     throw new Error(`DG3 source URI is required: ${row.ticker}`)
   }
+  if (provenance.dividendEvidence !== undefined) {
+    if (
+      !provenance.dividendEvidence.sourceUri.trim() ||
+      !SHA256_PATTERN.test(provenance.dividendEvidence.sourceSha256) ||
+      !(provenance.dividendEvidence.rawBytes instanceof Uint8Array)
+    ) {
+      throw new Error(`DG3 dividend evidence shape is invalid: ${row.ticker}`)
+    }
+    const dividendSha256 = createHash('sha256')
+      .update(provenance.dividendEvidence.rawBytes)
+      .digest('hex')
+    if (dividendSha256 !== provenance.dividendEvidence.sourceSha256) {
+      throw new Error(`DG3 dividend evidence hash mismatch: ${row.ticker}`)
+    }
+  }
   if (!SHA256_PATTERN.test(provenance.sourceSha256)) {
     throw new Error(`DG3 source SHA-256 is invalid: ${row.ticker}`)
   }
@@ -141,6 +162,23 @@ function validateRawObservation(row: Dg3RawObservation): void {
   ) {
     throw new Error(`DG3 observations must precede signal date: ${row.ticker}`)
   }
+  if (
+    provenance.outcomeDates !== undefined &&
+    (provenance.outcomeDates.length === 0 ||
+      provenance.outcomeDates.some(
+        date => !isIsoDate(date) || date < row.signalAsOf
+      ))
+  ) {
+    throw new Error(`DG3 outcome dates are invalid: ${row.ticker}`)
+  }
+  if (
+    provenance.outcomeDates?.some(
+      date =>
+        Date.parse(`${date}T23:59:59.999Z`) > Date.parse(provenance.fetchedAt)
+    )
+  ) {
+    throw new Error(`DG3 outcome contains future information: ${row.ticker}`)
+  }
   ensureFinite(
     [
       row.percentile,
@@ -188,6 +226,18 @@ export function normalizeDg3Observations(
       sourcePublishedAt: row.provenance.sourcePublishedAt,
       fetchedAt: row.provenance.fetchedAt,
       observationDates: [...row.provenance.observationDates],
+      ...(row.provenance.outcomeDates === undefined
+        ? {}
+        : { outcomeDates: [...row.provenance.outcomeDates] }),
+      ...(row.provenance.dividendEvidence === undefined
+        ? {}
+        : {
+            dividendEvidence: {
+              sourceUri: row.provenance.dividendEvidence.sourceUri,
+              sourceSha256: row.provenance.dividendEvidence.sourceSha256,
+              rawBytes: row.provenance.dividendEvidence.rawBytes.slice(),
+            },
+          }),
     },
     rawBytes: row.rawBytes.slice(),
   }))
