@@ -1,1 +1,2 @@
+npm run status:check
 npx lint-staged

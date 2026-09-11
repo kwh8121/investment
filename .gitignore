@@ -12,6 +12,9 @@
 
 # testing
 /coverage
+/playwright-report/
+/test-results/
+/.playwright-mcp/
 
 # next.js
 /.next/
@@ -46,3 +49,6 @@ next-env.d.ts
 /.serena/
 /.sisyphus/
 *.swp
+
+# local raw evidence; manifests record filenames and hashes only
+/docs/plan/gates/evidence-bundle/raw/
