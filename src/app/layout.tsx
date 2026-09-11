@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'NextJS Starter - 모던 웹 스타터킷',
+  title: 'Signal/Guide — ETF 투자 가이드',
   description:
-    'Next.js 15, TypeScript, TailwindCSS, ShadcnUI로 구축된 프로덕션 준비가 완료된 웹 애플리케이션 스타터킷',
+    '한국 승인 ETF 유니버스의 신호, 근거, 가상 포트폴리오를 검증하는 투자 가이드',
 }
 
 export default function RootLayout({

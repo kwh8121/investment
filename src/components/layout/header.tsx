@@ -5,7 +5,13 @@ import { useMediaQuery } from 'usehooks-ts'
 import { Menu } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { MainNav } from '@/components/navigation/main-nav'
 import { MobileNav } from '@/components/navigation/mobile-nav'
 import { Container } from './container'
@@ -13,7 +19,9 @@ import { ThemeToggle } from '@/components/theme-toggle'
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('(max-width: 768px)', {
+    initializeWithValue: false,
+  })
 
   return (
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
@@ -22,7 +30,9 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center space-x-2">
-              <span className="text-xl font-bold">NextJS Starter</span>
+              <span className="text-xl font-bold tracking-tight">
+                Signal<span className="text-amber-400">/</span>Guide
+              </span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -50,6 +60,10 @@ export function Header() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                  <SheetTitle className="sr-only">메뉴</SheetTitle>
+                  <SheetDescription className="sr-only">
+                    사이트 이동 메뉴
+                  </SheetDescription>
                   <MobileNav onClose={() => setMobileMenuOpen(false)} />
                 </SheetContent>
               </Sheet>
