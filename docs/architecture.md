@@ -1,8 +1,8 @@
 # 아키텍처
 
-이 저장소는 한국어 Next.js App Router 기반의 정적 UI 기준선입니다. 현재는 소개 페이지와 로그인·회원가입 폼 UI만 제공하며, ETF MVP의 데이터 처리, 영속 저장, 외부 연동, 인증 백엔드, Route Handler, 예약 작업은 구현되어 있지 않습니다.
+이 저장소는 한국어 Next.js App Router 기반의 ETF 투자 가이드 MVP입니다. 현재 제품 대시보드와 Task 005~014의 데이터 계약·수집·전략·Scanner·리서치·가이드·위험·Forward Validation 도메인 모듈 및 결정론적 테스트가 구현되어 있습니다.
 
-본 문서의 ETF MVP 대상 구조는 `docs/PRD.md`에 근거한 **계획**입니다. W1 데이터·권한 Go/No-Go를 통과하기 전에는 어떤 데이터 접근 방식이나 운영 기반도 확정하거나 구현된 것으로 간주하지 않습니다.
+`docs/plan/gates/DG1-data-rights.md`의 Conditional Go는 한국 시장에만 적용됩니다. 현재 구현은 계약과 fixture 수준이며, 승인된 실데이터의 지속 수집·외부 연동·운영 스케줄링은 아직 연결되지 않았습니다. 구현 완료와 DG2~DG4 운영 승인은 분리하며, 실행 상태는 각 Gate 입력 JSON과 `src/lib/etf/gate-validation.ts`에서 계산합니다.
 
 ## 전체 구조
 
@@ -12,7 +12,7 @@
 브라우저 요청 → App Router 페이지 → 레이아웃·섹션 컴포넌트 조립 → HTML/CSS 응답
 ```
 
-### 계획된 ETF MVP 구조 (미구현)
+### 구현된 계약 흐름과 미연결 운영 경계
 
 ```text
 승인된 데이터 소스 또는 CSV 대체 경로
@@ -23,13 +23,13 @@
   → Data & Scanner / Radar & Research / ETF Analysis / Guide & Paper
 ```
 
-이 흐름은 특정 저장소, ORM, 작업 플랫폼 또는 공급자 계약을 전제하지 않습니다. W1에서 소스별 사용 권한, 기준일 재현성, 필수 필드 완전성, CSV 대체 가능성을 확인한 뒤에만 세부 구현 방식을 결정합니다.
+한국 시장의 Task 004 계약은 PostgreSQL 호환 관계형 저장소와 버전 관리 SQL 마이그레이션을 사용한다. 호스팅 제공자, ORM, 작업 큐와 스케줄러는 이 계약을 구현할 때 선택하며, 브라우저나 공개 Route Handler가 외부 데이터 소스에 직접 접근하지 않는다.
 
 ## 진입점
 
 - `package.json` — `npm run dev`, `npm run build`, `npm run start`가 Next.js 프로세스를 시작합니다.
 - `src/app/layout.tsx` — 모든 App Router 경로의 루트 레이아웃입니다. 폰트, 테마 Provider, 토스트를 조립합니다.
-- `src/app/page.tsx` — `/`의 진입점이며 정적 랜딩 페이지를 렌더링합니다.
+- `src/app/page.tsx` — `/`의 진입점이며 ETF 제품 대시보드를 렌더링합니다.
 - `src/app/login/page.tsx`, `src/app/signup/page.tsx` — 로그인과 회원가입 UI의 진입점입니다. 인증 API나 세션 처리는 연결되어 있지 않습니다.
 
 ## 코드 맵
@@ -42,15 +42,15 @@ Next.js 파일 시스템 라우팅 경계입니다. 현재 `/`, `/login`, `/sign
 
 ### `src/components/`
 
-프레젠테이션 계층입니다. `layout/`은 페이지 셸, `sections/`는 랜딩 섹션, `navigation/`은 메뉴, `ui/`는 shadcn/ui 프리미티브, `providers/`는 클라이언트 Provider 경계입니다.
+프레젠테이션 계층입니다. `product-dashboard.tsx`는 Data Status, Scanner, Weekly Guide와 Paper Portfolio를 조립하고, `layout/`은 페이지 셸, `navigation/`은 메뉴, `ui/`는 shadcn/ui 프리미티브, `providers/`는 클라이언트 Provider 경계입니다.
 
 **불변 조건:** `components/ui/`에는 ETF 판단 규칙이나 데이터 접근을 넣지 않습니다. UI는 도메인 결과를 표시하는 역할에 한정합니다.
 
 ### `src/lib/`
 
-공통 유틸리티 계층입니다. `src/lib/utils.ts`는 클래스 이름 결합을 제공하고, `src/lib/env.ts`는 현재 환경 변수(`NODE_ENV`, `VERCEL_URL`, `NEXT_PUBLIC_APP_URL`)만 검증합니다.
+공통 유틸리티와 ETF 도메인 계층입니다. `src/lib/etf/`는 원본 정규화, 수집, 전략 점수, 백테스트, Scanner, 리서치·가이드, 위험, Gate와 Forward Validation 계약을 구현합니다. `src/lib/utils.ts`는 클래스 이름 결합을 제공하고 `src/lib/env.ts`는 런타임 환경을 검증합니다.
 
-**경계:** 향후 서버 전용 비밀값이 필요해지면 `env`를 통해 읽고 `NEXT_PUBLIC_` 접두사를 사용하지 않습니다. 현재 수집 자격 증명이나 실행 토큰은 정의되어 있지 않습니다.
+**경계:** 수집 자격 증명은 서버 전용 런타임에서만 읽고 `NEXT_PUBLIC_` 접두사를 사용하지 않는다. `KRX_API_KEY`와 키움 자격 증명·토큰·계정 식별자는 브라우저 번들, 원본 스냅샷, 정규화 데이터와 작업 로그에 기록하지 않는다.
 
 ### `docs/`
 
@@ -58,23 +58,57 @@ Next.js 파일 시스템 라우팅 경계입니다. 현재 `/`, `/login`, `/sign
 
 ### `package.json`
 
-빌드와 정적 검사 명령, 현재 런타임 의존성을 정의합니다. 데이터 저장 계층, ORM, 마이그레이션 도구, 작업 큐·스케줄러, 차트 라이브러리, 테스트 러너는 포함되어 있지 않습니다.
+빌드, 정적 검사, Task별 Node 테스트와 `status:check` 명령을 정의합니다. SQL 마이그레이션은 `migrations/`에 있지만 호스팅 DB, ORM, 작업 큐와 운영 스케줄러는 아직 연결되지 않았습니다.
 
 ## 데이터 흐름
 
 ### 현재 흐름
 
-`GET /` 요청은 `src/app/page.tsx`에서 `Header`, `HeroSection`, `FeaturesSection`, `CTASection`, `Footer`를 조립해 HTML/CSS를 반환합니다. 로그인과 회원가입 폼은 입력 검증 UI를 제공하지만, 입력을 저장하거나 인증하지 않습니다. 외부 API 호출과 영속 데이터 모델은 없습니다.
+`GET /` 요청은 `src/app/page.tsx`에서 제품 셸과 `ProductDashboard`를 조립해 Data Status, Scanner, Weekly Guide와 Paper Portfolio를 표시합니다. 현재 화면 데이터는 구현·검증용 읽기 모델이며 승인된 실데이터 운영 파이프라인과 직접 연결된 상태는 아닙니다. 로그인과 회원가입 폼도 아직 인증 API나 세션 저장소에 연결되지 않았습니다.
 
-### ETF MVP 대상 흐름 (미구현)
+### ETF MVP 계약 흐름
 
-1. DG1에서 한국·미국 시장별 데이터 소스의 개인 비상업·비공개 내부 사용 경계와 기준일 재현 가능성을 확인합니다. 공개 표시, 제3자 공유, 재배포 또는 상업적 이용은 MVP 범위 밖이며, 이를 제안할 때만 구현 전에 별도 약관·권한 검토를 수행합니다.
-2. 승인된 소스 또는 CSV 업로드에서 입력을 받아 원본 값, 출처, 기준일, 수집·등록 시각을 as-of 스냅샷과 작업 로그로 남깁니다. 저장·공유 전 인증 헤더, API 키, Bearer 토큰, 쿠키와 계정 식별자를 제거하거나 마스킹합니다.
-3. 검증·정규화 단계에서 출처, 기준일, 결측, 중복, 형식 오류를 상태값으로 보존합니다. 결측을 0으로 바꾸지 않습니다.
-4. 검증된 입력을 ETF 마스터, 가격·환율·분배금, 전략별 신호, 산업·리서치 근거와 포트폴리오 위험 모델에 연결합니다.
+1. 한국 시장의 승인된 키움·KRX 소스 또는 CSV 대체 입력만 서버 수집 경계로 들어온다. 공개 표시, 제3자 공유, 재배포 또는 상업적 이용은 범위 밖이다.
+2. 수집기는 민감한 인증 정보를 제거한 뒤 원본 as-of 스냅샷과 작업 로그를 먼저 기록한다.
+3. 검증·정규화 단계는 출처, 기준일, 결측, 중복, 형식 오류와 품질 플래그를 상태값으로 보존한다. 결측을 0으로 바꾸지 않는다.
+4. 검증된 한국 ETF 마스터와 일별 가격·NAV·거래량만 Task 005의 단일 ETF 흐름에 연결한다. 미국 ETF, 환율과 분배금은 DG1 재검토 전 저장·계산·표시하지 않는다.
 5. G0 데이터, G1 산업·펀더멘털, G2 시장 신호, G3 ETF 적합성, G4 포트폴리오 위험을 순서대로 적용합니다. 모든 Gate와 사람 검토를 통과하지 않은 후보는 가상 편입할 수 없습니다.
 6. Server Component 또는 내부 읽기 API가 안정된 화면 모델만 제공하여 `Data & Scanner / Radar & Research / ETF Analysis / Guide & Paper`의 네 제품 영역을 렌더링합니다.
 7. 가이드 발행 시 입력, 규칙·유니버스 버전, 기준일, 승인 시각을 함께 고정합니다. 발행된 가이드와 가이드 스냅샷은 변경하지 않습니다.
+
+## Task 004 승인 데이터 계약 (한국 시장 한정)
+
+### 저장소와 마이그레이션
+
+- 저장소는 PostgreSQL 호환 관계형 데이터베이스를 사용한다. 호스팅 제공자는 계약의 일부가 아니며 구현 시점에 선택한다.
+- 스키마 변경은 `migrations/<순번>_<설명>.sql` 형식의 새 SQL 파일로만 적용한다. 적용된 마이그레이션을 수정·삭제하지 않고, 정정은 새 마이그레이션으로 표현한다.
+- 수집 실행은 외부 API 호출, 원본 스냅샷 기록, 정규화와 품질 판정을 하나의 추적 가능한 `ingestion_run`으로 연결한다. 재시도는 새 실행으로 남기되 같은 원본 스냅샷을 중복 생성하지 않는다.
+
+### 최소 엔터티와 공통 필드
+
+| 엔터티          | 용도                              | 필수 필드                                                                                        | 고유성·변경 규칙                                                                  |
+| --------------- | --------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| `ingestion_run` | 수집·재시도 추적                  | `id`, `source`, `started_at`, `finished_at`, `status`, `attempt`, `failure_reason`               | 실행마다 새 행; 성공·실패 모두 보존                                               |
+| `raw_snapshot`  | 민감 정보가 제거된 원본 응답 보존 | `id`, `ingestion_run_id`, `source`, `endpoint`, `as_of`, `fetched_at`, `payload_hash`, `payload` | `(source, endpoint, as_of, payload_hash)` 중복 금지; 본문은 불변                  |
+| `etf_master`    | 한국 ETF 식별과 분류              | `instrument_id`, `ticker`, `name`, `market`, `source`, `as_of`, `snapshot_id`                    | `instrument_id`는 KRX 표준 식별자, `ticker`는 국내 단축 코드; 변경은 새 기준일 행 |
+| `daily_quote`   | 종가·거래량·NAV 정규화            | `instrument_id`, `source`, `as_of`, `close`, `volume`, `nav`, `snapshot_id`, `quality_status`    | `(instrument_id, source, as_of)`당 하나; 정정은 새 스냅샷 참조와 이력으로 표현    |
+| `quality_event` | 결측·불일치·이상치 근거           | `id`, `daily_quote_id`, `rule_id`, `severity`, `observed_at`, `reason`                           | 해결 전 삭제하지 않으며 처리 상태를 별도로 기록                                   |
+
+모든 엔터티는 `source`, `as_of`, 수집 시각, 생성 시각과 품질 상태를 유지한다. 원본에서 파생된 정규화 값은 반드시 `snapshot_id`로 역추적할 수 있어야 한다.
+
+### 수집·재실행 규칙
+
+- 수집 요청은 `source`, `endpoint`, `as_of`와 비민감 요청 파라미터의 해시로 식별한다. 같은 식별자가 성공한 경우 재실행은 기존 스냅샷을 재사용하고, 실패한 경우에만 새 `ingestion_run`을 남긴다.
+- 기준일이 같은 서로 다른 소스 값은 덮어쓰지 않는다. 소스별 `daily_quote`를 유지하고 KRX 대조 결과는 `quality_event`로 남긴다.
+- `close`, `volume`, `nav`가 없거나 의미가 확인되지 않으면 `NULL`과 원인을 기록한다. 0 또는 추정값으로 대체하지 않는다.
+- 수정주가, 분할·병합·분배락 처리 기준은 아직 확정되지 않았다. 해당 이벤트가 감지되면 `quality_event`를 생성하고, 추천·성과 계산 입력에서 제외한다.
+
+### 실행·Secret 경계
+
+- 수집과 마이그레이션은 서버 전용 작업에서만 실행한다. 브라우저, Server Component props, 내부 읽기 DTO, 로그와 오류 응답에 Secret을 포함하지 않는다.
+- API 키·토큰·쿠키·계정 식별자는 원본 응답 저장 전에 제거한다. Secret 존재 여부도 일반 사용자 화면에 표시하지 않는다.
+- CSV 대체 입력은 동일한 `source`, `as_of`, `payload_hash`, 품질 검증과 추적 규칙을 거쳐야 한다.
+- 미국 ETF, 환율과 분배금용 엔터티·수집기는 이번 계약에 포함하지 않는다. 해당 범위는 DG1 재검토 기록이 있어야 추가할 수 있다.
 
 ## 계획된 정보 경계
 
@@ -92,14 +126,14 @@ Next.js 파일 시스템 라우팅 경계입니다. 현재 `/`, `/login`, `/sign
 
 - **App Router UI:** `src/app/**/page.tsx`가 브라우저 요청과 렌더링을 연결합니다. 현재는 정적 UI 경계입니다.
 - **환경 구성:** `src/lib/env.ts`가 배포 환경과 서버 코드 사이의 구성 경계입니다. 서버 전용 값과 공개 URL을 분리해야 합니다.
-- **입력 경계 (계획):** 승인된 데이터 소스와 CSV 업로드는 동일한 기준일·출처·상태 계약으로 정규화 계층에 전달되어야 합니다. 소스별 세부 계약은 W1 승인 전 확정하지 않습니다.
+- **입력 경계 (승인):** 한국 ETF의 키움·KRX·CSV 입력은 Task 004 계약의 기준일·출처·상태 규칙으로 정규화 계층에 전달한다. 미국 시장 입력은 DG1 재검토 전 거부한다.
 - **읽기 경계 (계획):** Server Component를 우선 사용하고, 여러 화면이나 클라이언트 상호작용에 안정된 DTO가 필요할 때만 내부 읽기 API를 둡니다. 저장 형식이나 내부 규칙 객체를 직접 노출하지 않습니다.
 
 ## 아키텍처 불변 조건
 
-- 현재 구현과 계획된 구조를 혼동하지 않습니다. 계획된 데이터·도메인·운영 계층은 DG1 통과 전 미구현 상태입니다.
+- 구현 완료와 운영 승인을 혼동하지 않습니다. Task 005~014 도메인 계약과 fixture 테스트는 구현됐지만, 승인된 실데이터 수집과 DG2~DG4 Gate는 별도 실행 입력으로 검증합니다.
 - Core 6은 초기 심층 검증군이며 고정 투자대상이 아닙니다. Emerging Radar는 승격 조건과 사람 검토 전에는 추천 후보로 사용하지 않습니다.
-- 목표 범위는 사전 필터를 통과한 한국·미국 ETF입니다. DG1은 각 시장 5개 이상, DG2는 각 20~30개로 단계 확장하며, 시장별 데이터 품질·재현성 실패 시 해당 시장을 `Conditional Go` 또는 `No-Go`로 분리합니다.
+- 목표 범위는 사전 필터를 통과한 한국·미국 ETF이나, 현재 구현 승인 범위는 한국 ETF뿐이다. 미국 시장은 `docs/plan/gates/DG1-data-rights.md` 재검토 전 입력·저장·계산·표시하지 않는다.
 - 레버리지·인버스 ETF는 기본 추천에서 제외합니다. ETF·ETN 구분과 상품 구조를 G3에서 검증합니다.
 - G0 데이터 품질을 통과하지 못한 입력은 점수 계산과 가이드 발행을 차단합니다. G1~G4도 순서대로 산업·펀더멘털, 시장 신호, ETF 적합성, 포트폴리오 위험을 검증합니다.
 - Momentum Acceleration과 Oversold Recovery는 별도 스코어카드와 버전으로 계산하며 전략 간 점수를 직접 비교하지 않습니다.
@@ -110,26 +144,28 @@ Next.js 파일 시스템 라우팅 경계입니다. 현재 `/`, `/login`, `/sign
 
 ## 기능 추적
 
-현재 대표 기능은 정적 홈 화면 렌더링입니다.
+현재 대표 기능은 ETF 제품 대시보드와 도메인 계약 흐름입니다.
 
 ```text
 GET /
-  → src/app/page.tsx                 Home()
-  → src/components/layout/header.tsx Header()
-  → src/components/sections/hero.tsx HeroSection()
-  → src/components/sections/features.tsx FeaturesSection()
-  → src/components/sections/cta.tsx  CTASection()
-  → src/components/layout/footer.tsx Footer()
-  → HTML 응답
+  → src/app/page.tsx
+  → src/components/product-dashboard.tsx
+  → Data Status / Scanner / Weekly Guide / Paper Portfolio
+
+승인 입력 또는 fixture
+  → normalize / collection / pipeline
+  → strategy / backtest / scanner
+  → research / guide / risk
+  → gate-validation / forward-validation
 ```
 
-계획된 대표 업무 흐름은 `Data Status → 전략별 Scanner → ETF Analysis → Weekly Guide → Paper Portfolio → Evaluation`입니다. 이 흐름은 데이터 기준일, 전략·유니버스 버전, G0~G4, 불변 가이드 스냅샷과 가상 포지션 평가를 한 번에 추적할 수 있어야 하지만 현재는 구현되어 있지 않습니다.
+이 흐름의 코드와 결정론적 테스트는 구현됐습니다. 다만 승인된 실데이터 입력, 지속 수집과 운영 저장소는 DG2~DG4가 `Go`가 될 때까지 제품 운영으로 간주하지 않습니다.
 
 ## 테스트 전략
 
-현재 별도 테스트 러너나 테스트 파일은 없습니다. `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run build`가 현재 정적 품질 경계입니다.
+`test/`의 Node 테스트가 Task 005~014, Gate 상태와 Forward Validation 계약을 검증합니다. `npm run status:check`는 실행 입력과 권위 문서의 상태 드리프트를 차단하며, `npm run check-all`은 상태·타입·lint·포맷을 함께 검사합니다.
 
-ETF MVP를 구현할 때는 선택한 구현 방식에 맞춰 다음 계약을 검증합니다.
+현재 테스트는 다음 계약을 검증합니다.
 
 - 입력 검증 테스트: 승인된 데이터와 CSV 대체 입력이 기준일·출처·결측·중복 상태를 일관되게 보존하는지 확인합니다.
 - 도메인 규칙 테스트: G0~G4 적용 순서, 전략별 점수 분리, Top 3 교체와 포트폴리오 위험 판정을 확인합니다.
@@ -139,14 +175,13 @@ ETF MVP를 구현할 때는 선택한 구현 방식에 맞춰 다음 계약을 �
 
 ## 구현 준비도와 다음 순서
 
-현재 UI 기반은 내부 화면을 추가할 수 있는 출발점이지만, 데이터 기반 ETF MVP의 구현 근거는 아직 없습니다. 착수 순서는 화면 확장이 아니라 W1 데이터·품질 검증입니다.
+Task 005~014의 구현 단계와 가격 창 검증·DG2 증거 준비도 패키지는 완료됐습니다. 현재 익명 공개 경로로는 분배금과 5×2 전략 시점 입력을 완결할 수 없으므로, 추가 수집기 연동이나 반복 조회는 다음 순서에 포함하지 않습니다.
 
-1. `docs/PRD.md`의 DG1 기준으로 한국·미국 시장별 개인 내부 사용 경계, 기준일, 필수 필드, CSV 대체 가능성을 판정합니다.
-2. 통과한 입력만 대상으로 원본 as-of 스냅샷과 작업 로그의 최소 계약을 정합니다.
-3. 대표 ETF 하나의 Raw → 정규화 → 원화 환산 → 전략 점수 → 가이드 읽기 모델을 종단 구현합니다.
-4. DG2에서 시장별 20~30개 소규모 유니버스의 전략 방향성을 확인한 뒤 전체 유니버스와 G0~G4 계약을 확장합니다.
-5. 구현 방식이 확정된 뒤에만 네 제품 영역의 내부 읽기 경계를 추가합니다.
-6. DG4에서 재현성, 데이터 완전성, 운영 부담, 복구와 발행 안전성을 기준으로 Go, Conditional Go, No-Go를 판정합니다.
+1. `docs/plan/gates/DG2-data-source-gap-report.md`의 재개 조건을 충족하는 공식 원문 또는 승인된 접근권한이 제공될 때만 `DG2-evidence-input.template.json`에 증거를 연결하고 검증기를 실행합니다.
+2. DG2가 `Go`가 된 뒤에만 `DG3-evidence-input.template.json`에 3~5년 데이터, 하락장, 비용, 생존편향과 민감도 검토를 연결합니다.
+3. `npm run status:check`로 ROADMAP과 Gate 문서가 계산 상태와 일치하는지 확인합니다.
+4. DG2와 DG3가 `Go`가 된 뒤 DG4 운영 부담과 Owner/Approver 결정을 기록합니다.
+5. DG4가 `Go`가 된 경우에만 Forward Validation 운영을 시작합니다.
 
 ## 권장 읽기 순서
 

@@ -80,6 +80,44 @@ The selected rows were:
 
 This revalidates read-only price/NAV/volume access for the approved universe. It does not establish ETF distribution amount, ex-distribution date, payment date, or total-return semantics, so it does not change `dividendVerified` or the DG2 decision.
 
+## Historical daily capture coverage — 2026-09-11
+
+The following facts are the canonical record of the persisted current-list numeric-candidate Kiwoom bulk capture and the KRX daily snapshots documented in this section. They describe dated snapshots, not a continuous historical series, a final DG2 sample, or a Gate-status change. They do not replace the separate five-ETF-plus-KOSPI200 pilot-period retrieval in `DG2-strategy-validation.md`.
+
+### Kiwoom ETF daily capture
+
+- Requested date: `2026-08-03`.
+- Candidate source: the current `ka40004` list contained 1,168 rows; 864 six-digit numeric candidates and 304 unsupported non-numeric identifiers were retained separately.
+- Coverage: all 864 numeric candidates had exactly one requested-date daily row; `missing_requested_date = 0`.
+- Frozen list SHA-256: `7e945b5986b2b6143202d68dcaaed7b6daf659c498da43f5a8ca9af57b171970`.
+- Normalized row fields: `ticker`, `productName`, `date`, `closePrice`, `tradeQuantity`, `nav`, and `tradeValue`. The raw sanitized response retains source fields including `cntr_dt`, `cur_prc`, `trde_qty`, `nav`, and `acc_trde_prica`.
+- Raw artifacts are outside Git at `/home/kwh8121/.local/share/stock-market/evidence-bundle/raw/kiwoom-etf-historical-daily/20260803/dg2-20260911/`.
+
+This proves only a single-date numeric-candidate observation. It does not prove the historical universe, ETF/ETN or leverage/inverse classification, listing age, average-trading-value eligibility, `acc_trde_prica` selection semantics, or mappings and historical membership for the 304 unsupported identifiers.
+
+### KRX ETF daily market-data capture
+
+- `2026-09-04`: HTTP 200, 1,167 ETF rows, five approved tickers matched Kiwoom on date, close, volume, and NAV, with raw SHA-256 `c92c6e849b6bf2227d663074a0c4691da7fe4dae5ce9729bd7a868c884aa7a5d`.
+- `2026-09-08`: `capture:krx-etf-daily` recorded 1,168 rows with raw SHA-256 `09d381ad522e790d918f7dc73d2f4ee2d3158e5a4909f2e6f706bc60c2c31727`; the external artifact rejects overwrites for that date.
+- The validated response contract is `BAS_DD`, `ISU_CD`, `ISU_NM`, `TDD_CLSPRC`, `NAV`, `ACC_TRDVOL`, and `ACC_TRDVAL`. Raw bytes and key-free metadata are stored outside Git.
+
+These are two point-in-time snapshots only. They do not prove a continuous KRX time series, historical Kiwoom universe/eligibility, or cross-source instrument mapping.
+
+### KRX `etf_bydd_trd` 60개 평일 기준일 empirical backfill — 2026-09-11
+
+The latest completed session was fixed at `2026-09-10`; 60 weekday request dates from `2026-06-19` through `2026-09-10` were queried sequentially. The experiment made 60 primary read-only requests and two additional raw-only retries for validator-rejected responses. No request received a rate-limit or other non-success HTTP response.
+
+| Check                                | Observed result                                                                                                                                                                                                                                 |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Date-bound responses                 | All 60 `OutBlock_1` payloads were nonempty and every row's `BAS_DD` matched its requested date.                                                                                                                                                 |
+| Row count                            | 69,258 rows total; per-date counts ranged from 1,140 to 1,168.                                                                                                                                                                                  |
+| Duplicate identifiers                | No date contained duplicate `ISU_CD` values.                                                                                                                                                                                                    |
+| Independent listing-count comparison | Not performed: no independently captured historical KRX listing master exists in this evidence bundle. The results are consistent with a date-level full-universe response but do not prove equality to the historical listed-instrument count. |
+| `INVSTASST_NETASST_TOTAMT`           | Key present in all 69,258 rows; populated in 66,949 rows and blank in 2,309 rows.                                                                                                                                                               |
+| `ACC_TRDVAL`                         | Key present in all 69,258 rows; populated in 66,949 rows and blank in 2,309 rows.                                                                                                                                                               |
+
+The blank values occurred for every row on `2026-07-17` (1,146 rows) and `2026-08-17` (1,163 rows). Both responses also contained blank `TDD_CLSPRC`, `NAV`, and `ACC_TRDVOL`, so the existing normalized capture correctly rejected them. Their raw bytes and key-free metadata are preserved outside Git as `krx-etf-bydd-trd-20260717.unvalidated.json` and `krx-etf-bydd-trd-20260817.unvalidated.json`; the remaining 58 dates used the normal immutable capture path. This is an observed source-data completeness gap, not a rate-limit finding, and it does not change any Gate decision.
+
 ## Required input before DG2 Go
 
 For every approved ETF and the approval period, add evidence with:
@@ -113,13 +151,13 @@ For scanner-level approval, retain the additional `ScannerCandidate` fields from
 
 ## Next action
 
-Obtain either an approved KRX/Public Data Portal export or a manually reviewed evidence bundle for the five ETFs, then re-run:
+When a closure reopen condition is met, obtain either an approved KRX/Public Data Portal export or a manually reviewed evidence bundle for the five pilot ETFs, then expand the evidence work to the final DG2 sample: exactly 30 eligible Korean ETFs ranked by Kiwoom `tradeValue` at `signalAsOf` (ties broken by ticker ascending), with no actual ticker ranking produced without a retained Kiwoom source snapshot. Then re-run:
 
 ```text
 npm run test:gate-validation
 ```
 
-The DG2 decision may be promoted to `Go` only when all five records have verified distribution and strategy-time inputs and the Owner/Approver decision is recorded. Until then, do not start Forward Validation or real-capital deployment.
+The five-pilot bundle is evidence-readiness history only, not a mandatory member set for the final sample. DG2 may be promoted to `Go` only when the final sample of exactly 30 eligible ETFs, ranked by Kiwoom `tradeValue` at `signalAsOf`, has verified distribution and strategy-time inputs and the Owner/Approver decision is recorded. Until then, do not start DG3 evidence work, Forward Validation, or real-capital deployment.
 
 ## Official source discovery snapshot — 2026-09-08
 
@@ -187,3 +225,55 @@ A follow-up source pass found the following additional leads, but none satisfies
 - `360750`: a third-party page reports KRW 66 for the 2026-07-31 reference date and 2026-08-04 payment at <https://moneyformer.com/tiger-%eb%af%b8%ea%b5%adsp500>, but no official Mirae, KRX, or KSD record was found. Keep `dividendVerified=false`.
 
 These results narrow the evidence gap but do not change the DG2 decision. The required next artifact remains a directly retained official issuer, KRX/KIND, or KSD record with ticker mapping, amount, dates, retrieval metadata, and SHA-256.
+
+## KRX direct ex-distribution artifacts — 2026-09-09
+
+The KIND issuer-search endpoint was queried directly for the approved ETF codes over 2026-07-20 through 2026-08-05. The following official KRX documents were fetched from their raw `99400.htm` URLs. Each explicitly identifies the product, states `분배락` as the reason, and gives an effective date of 2026-07-30.
+
+| Ticker   | Product             | KIND receipt     | Raw source URL                                                               | Raw SHA-256                                                        | Base price (KRW) |
+| -------- | ------------------- | ---------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------: |
+| `069500` | KODEX 200           | `20260729001409` | `https://kind.krx.co.kr/external/2026/07/29/001409/20260729002400/99400.htm` | `d5ea8000b380e4f2c11ea4ec67d86f110f1940991df3ac9eff208eb77ae25074` |           89,425 |
+| `102110` | TIGER 200           | `20260729001401` | `https://kind.krx.co.kr/external/2026/07/29/001401/20260729002409/99400.htm` | `958ddb86ded405b358c895083922ea3c15938df63f8774b9064265e187f81ced` |           89,265 |
+| `360750` | TIGER 미국S&P500    | `20260729001286` | `https://kind.krx.co.kr/external/2026/07/29/001286/20260729002516/99400.htm` | `5af95cef94efadaed56e2d83d78dd3bd15cde34b940018a26615b01f633aa51d` |           26,590 |
+| `133690` | TIGER 미국나스닥100 | `20260729001390` | `https://kind.krx.co.kr/external/2026/07/29/001390/20260729002419/99400.htm` | `6450f765a234acb05ce548a0ca0681077810437471264ce2d3f2442924407cbf` |          177,025 |
+
+`229200` returned no distribution or ex-distribution disclosure in the same search window; only an 2026-08-05 ETF registration/rules-change disclosure was returned. These KRX records are useful official confirmation of product mapping and ex-distribution timing for four ETFs, but they omit distribution amount, record date, payment date, and total-return treatment. They therefore remain supplemental evidence and must not set `dividendVerified=true` or change DG2's Conditional Go verdict.
+
+## Official-source recheck — 2026-09-10
+
+The public KIND issuer-search endpoint was rechecked directly for all five approved ticker identifiers. It reconfirmed the 2026-07-29 ex-distribution-price disclosures for `069500`, `102110`, `360750`, and `133690`, and only the 2026-08-05 registration/rules-change disclosure for `229200`. No queried KIND result supplied a target-ticker distribution amount, record date, payment date, or total-return treatment.
+
+Anonymous retrieval of the official KODEX and TIGER distribution pages likewise exposed page structure but no target-ticker historical detail rows. These are availability observations only; they do not add a new accepted artifact, change any verification flag, or change the DG2 Conditional Go decision.
+
+## TIGER public price-series candidate — 2026-09-10
+
+The official TIGER product-search endpoint resolved `102110` to `KR7102110004`. Its unauthenticated chart endpoint returned daily rows for `2026-02-03` through `2026-08-03` when queried with:
+
+```text
+GET https://investments.miraeasset.com/tigeretf/ko/product/chart/prdct-profit-list.ajax?ksdFund=KR7102110004&strtDt=20260203&endDt=20260803&period=6M
+```
+
+The response contains `wkdate`, `nav`, `prc`, `jisu`, and `nationPrc` values. It is a candidate raw price/NAV source for price-derived 1M/3M/6M and drawdown calculations only; it does not include distribution amount, record date, payment date, publication timestamp, or the non-price strategy inputs required by the DG2 contract. Before use, retain the exact raw response outside the repository, record its SHA-256 and retrieval metadata, and supply input-level calculation traces and source provenance through the DG2 evidence contract.
+
+The same endpoint was captured for the remaining TIGER ETFs at `2026-09-09T23:42:19Z` (raw responses are outside the repository under `/tmp/opencode/`):
+
+| Ticker   | Official fund ID | Rows | Raw SHA-256                                                        |
+| -------- | ---------------- | ---: | ------------------------------------------------------------------ |
+| `102110` | `KR7102110004`   |  120 | `7861b6f82ae5bbe3f4b3910d1d7108c2caa43dc14cb5f236b68c4f527b6621be` |
+| `360750` | `KR7360750004`   |  118 | `a51a4c3d73643a70b9c2e057caaa70c0c70e9e34f8693546e6d883d3bd119cc9` |
+| `133690` | `KR7133690008`   |  118 | `50d17174c5131b5a0716a072eb7315408e81d95a3fdff763f7b6bb82778a25d4` |
+
+All three responses span from `2026-02-03` to `2026-08-03`. They are candidate price-series captures, not accepted strategy artifacts: the response format provides derived percentage series and does not by itself prove the required raw price observations, distribution treatment, non-price inputs, or per-input reviewer provenance.
+
+## Current-access closure — 2026-09-10
+
+The following evidence-acquisition paths are closed for the current anonymous/public-access environment. “Closed” records an exhausted path; it does not mean the DG2 requirement is met or that any verification flag may change.
+
+| Evidence scope                            | Current result                                        | Closure reason                                                                                                                                                                                        | Reopen condition                                                                                                                         |
+| ----------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `102110`, `360750`, `133690` distribution | No accepted official amount/date artifact             | Public TIGER list/chart responses omit distribution amount, record/ex-date, payment date, and publication metadata; detail history requires authenticated access or a per-notice official document ID | Authenticated official distribution export, official notice HTML/PDF, or directly queryable KRX/KIND/KSD record with all required fields |
+| `229200` distribution                     | No approved-window artifact                           | KIND returned only the 2026-08-05 registration/rules-change notice; the captured Samsung April payment is outside the approval window                                                                 | Official in-window distribution document with ticker, amount, dates, and source metadata                                                 |
+| `069500` distribution                     | Source artifact retained but not accepted             | Independent review found no documented total-return window convention, incomplete manifest/reviewer fields, and raw-origin storage outside the required location                                      | Resolve total-return convention, complete manifest/reviewer record, and place originals outside the repository before a new review       |
+| 5 ETF strategy inputs                     | Price candidates only; no accepted 5×2 evidence batch | Public price/NAV captures do not supply all non-price inputs, input-level publication provenance, reviewer identity, or complete calculation traces                                                   | Approved raw price export plus source-backed industry, quality, eligibility, trigger, and risk inputs for all 10 artifacts               |
+
+No current-access closure changes `dividendVerified`, `strategyInputVerified`, the manifest decision, or DG2's `Conditional Go` status. DG3 and Forward Validation remain blocked until a reopened path produces a complete reviewed bundle.

@@ -1,0 +1,62 @@
+{
+  "bundleVersion": "2026-08-03-to-2026-09-08-v1",
+  "signalAsOf": "2026-08-03",
+  "evaluationEnd": "2026-09-08",
+  "strategyVersion": "strategy-v0.2",
+  "valuationCurrency": "KRW",
+  "benchmark": "KOSPI200",
+  "scope": "kiwoom-trade-value-top-30",
+  "minimumGateSampleSize": 30,
+  "selection": {
+    "selectorVersion": null,
+    "source": "kiwoom",
+    "asOf": null,
+    "rankingField": "tradeValue",
+    "tieBreak": "ticker-ascending",
+    "sampleSize": 30,
+    "sourceSnapshot": {
+      "sha256": null,
+      "fetchedAt": null,
+      "storageLocation": null
+    },
+    "members": [
+      {
+        "ticker": "<ticker>",
+        "instrumentId": "<instrumentId>",
+        "tradeValue": null,
+        "rank": null
+      }
+    ]
+  },
+  "pilotHistory": {
+    "note": "Pilot-readiness evidence only; these five ETFs are not a mandatory member set for the final 30-ETF sample.",
+    "tickers": ["069500", "102110", "229200", "360750", "133690"]
+  },
+  "collection": {
+    "status": "not_started",
+    "gapReport": "docs/plan/gates/DG2-data-source-gap-report.md"
+  },
+  "artifacts": [
+    {
+      "ticker": "<ticker>",
+      "kind": "distribution|momentum|oversold",
+      "status": "not_collected",
+      "source": {
+        "url": null,
+        "documentId": null,
+        "sha256": null,
+        "bytes": null,
+        "fetchedAt": null,
+        "publicationOrEffectiveDate": null
+      },
+      "tickerMapping": null,
+      "reviewer": null
+    }
+  ],
+  "review": {
+    "owner": null,
+    "approver": null,
+    "reviewedAt": null,
+    "decision": "pending"
+  }
+}

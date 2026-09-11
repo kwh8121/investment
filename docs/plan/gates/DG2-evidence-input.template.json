@@ -1,0 +1,63 @@
+{
+  "approvedTickers": ["069500", "102110", "229200", "360750", "133690"],
+  "signalAsOf": "2026-08-03",
+  "selection": null,
+  "verifications": [
+    {
+      "ticker": "069500",
+      "signalAsOf": "2026-08-03",
+      "evaluationEnd": "2026-09-08",
+      "hasPriceData": true,
+      "priceReturnKrw": 0.144443,
+      "benchmarkReturnKrw": 0.138723,
+      "dividendVerified": false,
+      "strategyInputVerified": false,
+      "noFutureLeakage": true
+    },
+    {
+      "ticker": "102110",
+      "signalAsOf": "2026-08-03",
+      "evaluationEnd": "2026-09-08",
+      "hasPriceData": true,
+      "priceReturnKrw": 0.144022,
+      "benchmarkReturnKrw": 0.138723,
+      "dividendVerified": false,
+      "strategyInputVerified": false,
+      "noFutureLeakage": true
+    },
+    {
+      "ticker": "229200",
+      "signalAsOf": "2026-08-03",
+      "evaluationEnd": "2026-09-08",
+      "hasPriceData": true,
+      "priceReturnKrw": 0.12911,
+      "benchmarkReturnKrw": 0.138723,
+      "dividendVerified": false,
+      "strategyInputVerified": false,
+      "noFutureLeakage": true
+    },
+    {
+      "ticker": "360750",
+      "signalAsOf": "2026-08-03",
+      "evaluationEnd": "2026-09-08",
+      "hasPriceData": true,
+      "priceReturnKrw": -0.04206,
+      "benchmarkReturnKrw": 0.138723,
+      "dividendVerified": false,
+      "strategyInputVerified": false,
+      "noFutureLeakage": true
+    },
+    {
+      "ticker": "133690",
+      "signalAsOf": "2026-08-03",
+      "evaluationEnd": "2026-09-08",
+      "hasPriceData": true,
+      "priceReturnKrw": -0.025552,
+      "benchmarkReturnKrw": 0.138723,
+      "dividendVerified": false,
+      "strategyInputVerified": false,
+      "noFutureLeakage": true
+    }
+  ],
+  "ownerApproved": true
+}

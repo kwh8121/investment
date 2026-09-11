@@ -1,0 +1,10 @@
+{
+  "rollingWindowYears": 0,
+  "includesDownturn2022": false,
+  "dividendReinvestmentVerified": false,
+  "transactionCostsVerified": false,
+  "delistedUniverseAssessed": false,
+  "futureLeakageVerified": false,
+  "sensitivityReviewed": false,
+  "ownerApproved": false
+}
