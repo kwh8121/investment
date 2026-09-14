@@ -1,6 +1,6 @@
 # DG0 v1.7 Contract Unification Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** This DG0 evidence-only plan follows the complete sequence in `docs/superpowers/plans/2026-09-14-etf-price-signal-mvp-v17-program.md`: `using-git-worktrees` → `subagent-driven-development` → `test-driven-development` → `requesting-code-review` → `finishing-a-development-branch`. It does not authorize DG1 implementation. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Produce reviewable, evidence-backed classification of all pre-v1.7 implementation assets, so a human can decide DG0 without treating legacy behavior as v1.7 completion.
 

@@ -32,6 +32,21 @@
 | `migrations/001_task005_korean_etf_pipeline.sql`, `002_task007_strategy_scorecards.sql`                                                             | 이전 task 모델과 scorecard/candidate gate 테이블을 생성한다                    | v1.7의 상태 축 분리, 필드 승인, raw manifest, date/calendar/rule version 계약을 충족한다고 입증되지 않았다                | 수정 필요    | 적용 이력은 불변 보존; 새 migration은 DG1 계획·RED 테스트 후에만 추가                    |
 | `test/project-status.test.ts`, `test/deployment-config.test.ts`, `test/font-loading.test.ts`                                                        | v1.7 정본 경로·배포 경계·UI font 설정을 확인한다                               | 제품 도메인 검증은 아니지만 현행 기준선과 private deployment 경계에 부합한다                                              | 재사용 가능  | 유지; DG1 §12.2 도메인 회귀 테스트를 대체하지 않음                                       |
 
+### 인벤토리 커버리지
+
+다음 표는 `rg --files src/lib/etf test migrations scripts | sort` 결과의 모든 경로를 위 매트릭스 행에 연결한다. 테스트 파일은 검증하는 자산 범위와 같은 분류를 따른다. 이 표는 행 단위의 구현 적합성 판정이 아니라, 어느 레거시 파일도 v1.7 증거 밖에 남지 않도록 하는 감사 색인이다.
+
+| 매트릭스 행                      | 포함 경로                                                                                                                                                                                                                                                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| raw/pipeline                     | `src/lib/etf/types.ts`, `normalize.ts`, `repository.ts`, `pipeline.ts`, `test/etf-pipeline.test.ts`                                                                                                                                                                                                                    |
+| KRX 가격 정본 후보               | `src/lib/etf/krx-etf-daily-market-data.ts`, `krx-dg2-adapter.ts`, `test/krx-etf-daily-market-data.test.ts`, `test/krx-dg2-adapter.test.ts`, `scripts/capture-krx-etf-daily.ts`                                                                                                                                         |
+| 키움 보조·capture 후보           | `src/lib/etf/kiwoom-etf-historical-daily.ts`, `kiwoom-etf-historical-daily-run.ts`, `kiwoom-dg2-distribution-adapter.ts`, `test/kiwoom-etf-historical-daily.test.ts`, `test/kiwoom-etf-historical-daily-run.test.ts`, `test/kiwoom-dg2-distribution-adapter.test.ts`, `scripts/capture-kiwoom-etf-historical-daily.ts` |
+| 현재 master/환율·분배 계약       | `src/lib/etf/collection.ts`, `test/etf-collection.test.ts`                                                                                                                                                                                                                                                             |
+| 기존 Scanner·추천·평가·위험 계약 | `src/lib/etf/scanner.ts`, `strategy.ts`, `backtest.ts`, `forward-validation.ts`, `risk.ts`, `test/etf-scanner.test.ts`, `test/etf-strategy.test.ts`, `test/etf-backtest.test.ts`, `test/forward-validation.test.ts`, `test/etf-risk.test.ts`, `test/task-014-qa.test.ts`                                               |
+| 이전 Gate·evidence 계약          | `src/lib/etf/dg2-evidence.ts`, `dg3-evidence.ts`, `gate-validation.ts`, `krx-dg3-adapter.ts`, `test/dg2-evidence.test.ts`, `test/dg3-evidence.test.ts`, `test/gate-validation.test.ts`, `test/krx-dg3-adapter.test.ts`                                                                                                 |
+| 이전 DB 계약                     | `migrations/001_task005_korean_etf_pipeline.sql`, `migrations/002_task007_strategy_scorecards.sql`                                                                                                                                                                                                                     |
+| 범용 보조 또는 비도메인 검사     | `src/lib/etf/bounded-concurrency.ts`, `test/bounded-concurrency.test.ts`, `test/project-status.test.ts`, `test/deployment-config.test.ts`, `test/font-loading.test.ts`, `test/research-guide.test.ts`, `test/research-inbox.test.ts`                                                                                   |
+
 ## PRD §12.2 및 §15 추적 상태
 
 | 항목                                             | DG0 시점 증거 상태                                                                               | 다음 증거 위치                                 |
@@ -41,11 +56,40 @@
 | §12.2 #7~13 (그룹·Scanner·선정·평가·결정성)      | 이전 Scanner/평가 테스트는 범위·계약이 다르므로 v1.7 증거 없음                                   | DG2 이후 각 전용 계획·테스트                   |
 | §15 수용 기준 15개                               | 현행 PRD가 정본이며 각 기준을 GREEN으로 연결한 v1.7 코드/Gate 증거 없음                          | DG1~DG4 Gate별 analyze 기록                    |
 
+### PRD §15 개별 수용 기준 상태
+
+PRD §15의 본문은 제품 사실의 유일한 정본으로 유지한다. 아래는 본문을 복제하지 않는 번호별 추적 색인이다.
+
+| §15 기준 | DG0 상태 | 후속 증거 Gate                         |
+| -------- | -------- | -------------------------------------- |
+| 1        | 미검증   | DG2.5                                  |
+| 2        | 미검증   | DG0 계약 통일 → DG1 소스 대조          |
+| 3        | 미검증   | DG2.5; 필수 회귀 #6은 모든 DG에서 유지 |
+| 4        | 미검증   | DG1                                    |
+| 5        | 미검증   | P0-01 및 DG1                           |
+| 6        | 미검증   | P0-02~05                               |
+| 7        | 미검증   | DG1 필드 승인 → P0-02~04 계산 guard    |
+| 8        | 미검증   | P0-06 공통 선정 엔진 및 DG3            |
+| 9        | 미검증   | P0-06 공통 선정 엔진                   |
+| 10       | 미검증   | DG2.5 재현 및 DG3 읽기 모델            |
+| 11       | 미검증   | P0-02~04 및 DG2.5                      |
+| 12       | 미검증   | DG2.5                                  |
+| 13       | 미검증   | DG2.5                                  |
+| 14       | 미검증   | DG3                                    |
+| 15       | 미검증   | DG2.5 및 DG3 표현 경계                 |
+
 ## 실행 증거 (2026-09-14)
 
-- 기준 commit: `c234c36 docs: align v1.7 delivery baseline (#1)`.
+### 기준선 참고 (부모 commit `c234c36`)
+
 - `npm run check-all`: **PASS**. status/deployment/font/DG evidence/adapters/typecheck/lint/prettier가 모두 통과했다. 이 결과는 레거시 도메인 동작이 v1.7을 충족한다는 뜻이 아니다.
-- `npm run build`: 이 로컬 실행 환경에서는 Turbopack CSS helper의 로컬 포트 바인딩이 `Operation not permitted (os error 1)`로 거부되어 검증 불가다. 동일 기준선의 GitHub Actions Quality run은 Turbopack build 성공을 기록했으나, 이 DG의 로컬 실행 결과를 GREEN으로 대체하지 않는다.
+- `npm run build`: 로컬 기본 작업 트리에서는 Turbopack CSS helper의 로컬 포트 바인딩이 `Operation not permitted (os error 1)`로 거부되어 검증 불가였다. 동일 기준선의 GitHub Actions Quality run은 Turbopack build 성공을 기록했으나, 이 DG의 로컬 실행 결과를 GREEN으로 대체하지 않는다.
+
+### 현재 DG0 문서 변경 (commit `86dbae1` 이후 작업 트리)
+
+- 문서 형식 검증: `npx prettier --write docs/plan/gates/DG0-v17-contract-unification.md docs/superpowers/plans/2026-09-14-etf-price-signal-mvp-v17-dg0.md` 후 `npm run format:check` **PASS**; `git diff --check` **PASS**.
+- 전체 `npm run check-all`: **PASS**. status/deployment/font/DG evidence/adapters/typecheck/lint/prettier가 모두 통과했다. 문서 감사와 레거시 테스트 통과는 v1.7 도메인 기능이 GREEN이라는 뜻이 아니다.
+- `npm run build`: **검증 불가 (환경 오류)**. Turbopack이 `src/app/globals.css [app-client] (css)` 처리 중 helper 프로세스의 로컬 포트 바인딩을 시도했고, 실행 샌드박스가 `Operation not permitted (os error 1)`로 거부했다. 이는 현재 변경에 의한 애플리케이션 실패로 판정하지 않으며, build GREEN 주장도 하지 않는다.
 - `/speckit.checklist`, `/speckit.analyze`: 현재 저장소 도구로 제공되지 않아 실행 산출물이 없다. 이 공백은 사람 DG0 판정 자료에서 명시적으로 검토한다.
 
 ## DG0 통과 전 남은 증거
