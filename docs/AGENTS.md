@@ -15,7 +15,7 @@ ETF Price Signal MVP의 정본·Gate·개발 가이드 문서 모음. 현행 제
 ## For AI Agents
 
 ### Working In This Directory
-- 제품 요구사항은 `ETF_Price_Signal_MVP_PRD_v1_7_Final.md`, 실행 상태는 `ROADMAP-v1.7.md`, 기술 경계는 `architecture-v1.7.md`, Gate 판정은 `plan/gates/`에서만 갱신한다.
+- 제품 요구사항은 `ETF_Price_Signal_MVP_PRD_v1_7_Final.md`, DG 수준 프로그램 기준선은 `ROADMAP-v1.7.md`, 진행 중 개별 작업 상태는 Linear, 기술 경계는 `architecture-v1.7.md`, Gate 판정은 `plan/gates/`에서만 갱신한다. 전체 도구·문서 하네스는 `guides/one-fact-one-home.md`를 따른다.
 - 이전 `PRD.md`, `ROADMAP.md`, `architecture.md` 및 기존 Gate 기록은 역사적 스냅샷이다. 내용을 현재 기준으로 조용히 고치지 말고 현행 정본을 참조한다.
 - 새 가이드를 추가하면 루트 `CLAUDE.md`의 "개발 가이드" 섹션에 링크 추가 고려
 - 모든 문서는 한국어로 작성

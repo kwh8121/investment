@@ -19,6 +19,7 @@
 - **🧭 프로그램 실행 계획**: `docs/superpowers/plans/2026-09-14-etf-price-signal-mvp-v17-program.md`
 - **🏗️ 현행 기술 경계**: `docs/architecture-v1.7.md`
 - **🔒 Gate 증거 및 판정**: `docs/plan/gates/`
+- **🔗 개발·리뷰·배포 하네스 / 정보 정본 정책**: `docs/guides/one-fact-one-home.md`
 - **📁 프로젝트 구조**: `docs/guides/project-structure.md`
 - **🎨 스타일링 가이드**: `docs/guides/styling-guide.md`
 - **🧩 컴포넌트 패턴**: `docs/guides/component-patterns.md`
