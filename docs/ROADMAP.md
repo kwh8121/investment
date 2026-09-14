@@ -1,4 +1,8 @@
-# ETF 투자 가이드 MVP 개발 로드맵
+# ETF 투자 가이드 MVP 개발 로드맵 — 역사적 스냅샷 (v1.7로 대체됨)
+
+> **상태:** 이 문서는 이전 P0-01~10 제품 방향의 실행 기록이며 현재 실행 상태의 정본이 아니다. 현행 정본은 `docs/ROADMAP-v1.7.md`, 현행 프로그램 계획은 `docs/superpowers/plans/2026-09-14-etf-price-signal-mvp-v17-program.md`다.
+>
+> 기존 Task 001~014 완료·Conditional Go·DG2~DG4 상태는 v1.7의 Gate 통과 또는 구현 완료를 뜻하지 않는다. 역사적 증거는 보존하되 v1.7에 재사용하려면 DG0 매핑과 새 Gate 증거가 필요하다.
 
 > 버전: v1.0  
 > 작성일: 2026-08-25  
