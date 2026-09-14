@@ -95,5 +95,10 @@
     "*.{json,css,md}": [
       "prettier --write"
     ]
+  },
+  "allowScripts": {
+    "@tailwindcss/oxide@4.1.13": true,
+    "msw@2.11.3": true,
+    "unrs-resolver@1.11.1": true
   }
 }
