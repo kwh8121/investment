@@ -15,13 +15,15 @@
 | `component-patterns.md` | React 컴포넌트 작성 패턴/관례 (~16KB) |
 | `nextjs-15.md` | Next.js 15 App Router 전용 가이드 - RSC, 라우팅, 메타데이터 등 (~11KB) |
 | `forms-react-hook-form.md` | React Hook Form + Zod + Server Actions 종합 가이드 (~40KB, 가장 상세함) |
+| `one-fact-one-home.md` | stock-market 계획·리뷰·개발·Gate·배포 하네스 및 정보 정본 배치 정책 |
 
 ## For AI Agents
 
 ### Working In This Directory
 - 가이드 추가 시 루트 `CLAUDE.md`의 "개발 가이드" 섹션에 `@/docs/guides/<file>.md` 링크 등록
 - 새 가이드 파일명은 `<주제>-<세부주제>.md` 케밥-케이스
-- 코드 예시는 실제 프로젝트의 의존성/버전과 일치시킬 것 (Next 15.5.3, React 19, Tailwind v4 등)
+- 코드 예시는 실제 프로젝트의 의존성/버전과 일치시킬 것 (Next 16.3.4, React 19.2.8, Tailwind v4 등)
+- `one-fact-one-home.md`는 운영 하네스의 정본이다. 제품·Gate·개별 작업 사실을 복제하지 말고 각 정본 문서 또는 Linear 링크로 연결한다.
 - 한국어로 작성 (제목/설명/주석 포함)
 
 ### Common Patterns

@@ -1,0 +1,41 @@
+{
+  "ticker": "069500",
+  "productName": "KODEX 200 ETF",
+  "issuer": "Samsung Asset Management",
+  "sourceUrl": "https://www.samsungfund.com/etf/lounge/notice-view.do?no=78273",
+  "sourceDocumentId": "Samsung Fund notice 78273",
+  "publicationDate": "2026-07-28",
+  "fetchedAt": "2026-09-08T23:28:44Z",
+  "rawArtifact": {
+    "path": "raw/samsung-notice-78273.html",
+    "sha256": "c325fbe0fb425fad26c15cb8b555546f371ee9ac80e15e952ff8b0598336ab32",
+    "bytes": 155003,
+    "scheduleImagePath": "raw/samsung-notice-78273-schedule.png",
+    "scheduleImageSha256": "c284807f7e42e5dfb2b6ef6fcf30cc9018e56926094c2e681d8445a0961f4afa",
+    "scheduleImageBytes": 402447
+  },
+  "distributionAmount": 183,
+  "currency": "KRW",
+  "distributionRatePercent": 0.19,
+  "exDistributionDate": "2026-07-30",
+  "recordDate": "2026-07-31",
+  "paymentDate": "2026-08-04",
+  "sourceEvidence": {
+    "tickerField": "069500",
+    "productField": "KODEX 200 ETF",
+    "amountField": "183",
+    "rateField": "0.19",
+    "htmlSelectors": ["p.date_16-13", "table td strong"],
+    "scheduleImageUrl": "https://www.samsungfund.com/upload/kodex/20260728//0de18027-5df7-4a86-9ac9-921366ed514a.png",
+    "scheduleFields": {
+      "noticeDate": "2026-07-29",
+      "exDistributionDate": "2026-07-30",
+      "recordDate": "2026-07-31",
+      "paymentDate": "2026-08-04"
+    }
+  },
+  "distributionVerified": false,
+  "verificationStatus": "pending_reviewer_review",
+  "reviewer": null,
+  "notes": "Official notice, ETF row, and schedule image are captured. Final verification remains pending reviewer confirmation of source mapping and total-return treatment."
+}

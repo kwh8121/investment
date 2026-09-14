@@ -35,7 +35,9 @@
     "test:gate-validation": "node --experimental-strip-types --test test/gate-validation.test.ts",
     "test:e2e": "playwright test",
     "status:check": "node --experimental-strip-types --test test/project-status.test.ts",
-    "check-all": "npm run status:check && npm run test:dg3-evidence && npm run test:dg3-adapter && npm run test:dg2-evidence && npm run test:dg2-adapter && npm run test:kiwoom-dg2-distribution && npm run test:bounded-concurrency && npm run test:kiwoom-etf-historical-daily && npm run test:kiwoom-etf-historical-daily-run && npm run test:krx-etf-daily-market-data && npm run typecheck && npm run lint && npm run format:check",
+    "test:deployment-config": "node --experimental-strip-types --test test/deployment-config.test.ts",
+    "test:font-loading": "node --experimental-strip-types --test test/font-loading.test.ts",
+    "check-all": "npm run status:check && npm run test:deployment-config && npm run test:font-loading && npm run test:dg3-evidence && npm run test:dg3-adapter && npm run test:dg2-evidence && npm run test:dg2-adapter && npm run test:kiwoom-dg2-distribution && npm run test:bounded-concurrency && npm run test:kiwoom-etf-historical-daily && npm run test:kiwoom-etf-historical-daily-run && npm run test:krx-etf-daily-market-data && npm run typecheck && npm run lint && npm run format:check",
     "prepare": "husky"
   },
   "dependencies": {

@@ -1,0 +1,34 @@
+{
+  "ticker": "229200",
+  "productName": "KODEX 코스닥150 ETF",
+  "issuer": "Samsung Asset Management",
+  "sourceUrl": "https://www.samsungfund.com/etf/lounge/notice-view.do?no=75493",
+  "sourceDocumentId": "Samsung Fund notice 75493",
+  "publicationDate": "2026-04-28",
+  "fetchedAt": "2026-09-08T23:36:00Z",
+  "rawArtifact": {
+    "path": "raw/samsung-notice-75493.html",
+    "sha256": "baee336f127cd029b6b56b687ba21218e5ebd70a45bcb8543942a24aa76a3645",
+    "bytes": 160369
+  },
+  "distributionAmount": 28,
+  "currency": "KRW",
+  "distributionRatePercent": 0.14,
+  "recordDate": "2026-04-30",
+  "paymentDate": "2026-05-06",
+  "approvalWindow": {
+    "signalAsOf": "2026-08-03",
+    "evaluationEnd": "2026-09-08",
+    "inWindow": false
+  },
+  "distributionVerified": false,
+  "verificationStatus": "confirmed_outside_approval_window",
+  "reviewer": null,
+  "notes": "Official Samsung record confirms a historical 229200 distribution, but its payment date precedes the approval window. It must not satisfy DG2 for the current signal.",
+  "sourceEvidence": {
+    "tickerField": "229200",
+    "productField": "KODEX 코스닥150 ETF",
+    "amountField": "28",
+    "rateField": "0.14"
+  }
+}

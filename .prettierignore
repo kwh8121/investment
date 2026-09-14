@@ -54,6 +54,16 @@ docs/guides/
 docs/references/kiwoom-rest-api-spec.json
 docs/plan/gates/evidence-bundle/raw/
 
+# Externally supplied or approved canonical source documents.
+# Preserve their source layout; revise product facts through a new document version.
+docs/constitution.md
+docs/ETF\ Price\ Signal\ MVP_Spec\ Kit\ +\ Superpowers.md
+docs/ETF_Price_Signal_MVP_PRD_v1_4_Patch.md
+docs/ETF_Price_Signal_MVP_PRD_v1_6.md
+docs/ETF_Price_Signal_MVP_PRD_v1_7_Final.md
+docs/ETF_Price_Signal_MVP_PRD_v1.3.md
+docs/ETF_Price_Signal_MVP_PRD_v1.5.md
+
 # Generated browser and agent runtime artifacts
 _workspace/
 test-results/

@@ -1,0 +1,134 @@
+{
+  "bundleVersion": "2026-08-03-to-2026-09-08-v1",
+  "signalAsOf": "2026-08-03",
+  "evaluationEnd": "2026-09-08",
+  "strategyVersion": "strategy-v0.2",
+  "valuationCurrency": "KRW",
+  "benchmark": "KOSPI200",
+  "scope": "pilot-readiness",
+  "minimumGateSampleSize": 20,
+  "approvedTickers": ["069500", "102110", "229200", "360750", "133690"],
+  "collection": {
+    "status": "current_access_closed",
+    "closedAt": "2026-09-10",
+    "gapReport": "docs/plan/gates/DG2-data-source-gap-report.md"
+  },
+  "artifacts": [
+    {
+      "ticker": "069500",
+      "kind": "distribution",
+      "path": "distribution/069500.json",
+      "status": "pending_reviewer_review",
+      "source": {
+        "url": "https://www.samsungfund.com/etf/lounge/notice-view.do?no=78273",
+        "documentId": "Samsung Fund notice 78273",
+        "sha256": "c325fbe0fb425fad26c15cb8b555546f371ee9ac80e15e952ff8b0598336ab32",
+        "bytes": 155003,
+        "fetchedAt": "2026-09-08T23:28:44Z",
+        "publicationOrEffectiveDate": "2026-07-28"
+      },
+      "tickerMapping": "069500 / KODEX 200 ETF",
+      "reviewer": null
+    },
+    {
+      "ticker": "229200",
+      "kind": "distribution",
+      "path": "distribution/229200-april-outside-window.json",
+      "status": "confirmed_outside_approval_window",
+      "source": {
+        "url": "https://www.samsungfund.com/etf/lounge/notice-view.do?no=75493",
+        "documentId": "Samsung Fund notice 75493",
+        "sha256": "baee336f127cd029b6b56b687ba21218e5ebd70a45bcb8543942a24aa76a3645",
+        "bytes": 160369,
+        "fetchedAt": "2026-09-08T23:36:00Z",
+        "publicationOrEffectiveDate": "2026-04-28"
+      },
+      "tickerMapping": "229200 / KODEX 코스닥150 ETF",
+      "reviewer": null
+    },
+    {
+      "ticker": "102110",
+      "kind": "distribution",
+      "status": "not_collected",
+      "reopenCondition": "Official amount/date document or approved export"
+    },
+    {
+      "ticker": "360750",
+      "kind": "distribution",
+      "status": "not_collected",
+      "reopenCondition": "Official amount/date document or approved export"
+    },
+    {
+      "ticker": "133690",
+      "kind": "distribution",
+      "status": "not_collected",
+      "reopenCondition": "Official amount/date document or approved export"
+    },
+    {
+      "ticker": "069500",
+      "kind": "momentum",
+      "status": "not_collected",
+      "reopenCondition": "Per-input provenance and reviewer-approved strategy bundle"
+    },
+    {
+      "ticker": "069500",
+      "kind": "oversold",
+      "status": "not_collected",
+      "reopenCondition": "Per-input provenance and reviewer-approved strategy bundle"
+    },
+    {
+      "ticker": "102110",
+      "kind": "momentum",
+      "status": "not_collected",
+      "reopenCondition": "Per-input provenance and reviewer-approved strategy bundle"
+    },
+    {
+      "ticker": "102110",
+      "kind": "oversold",
+      "status": "not_collected",
+      "reopenCondition": "Per-input provenance and reviewer-approved strategy bundle"
+    },
+    {
+      "ticker": "229200",
+      "kind": "momentum",
+      "status": "not_collected",
+      "reopenCondition": "Per-input provenance and reviewer-approved strategy bundle"
+    },
+    {
+      "ticker": "229200",
+      "kind": "oversold",
+      "status": "not_collected",
+      "reopenCondition": "Per-input provenance and reviewer-approved strategy bundle"
+    },
+    {
+      "ticker": "360750",
+      "kind": "momentum",
+      "status": "not_collected",
+      "reopenCondition": "Per-input provenance and reviewer-approved strategy bundle"
+    },
+    {
+      "ticker": "360750",
+      "kind": "oversold",
+      "status": "not_collected",
+      "reopenCondition": "Per-input provenance and reviewer-approved strategy bundle"
+    },
+    {
+      "ticker": "133690",
+      "kind": "momentum",
+      "status": "not_collected",
+      "reopenCondition": "Per-input provenance and reviewer-approved strategy bundle"
+    },
+    {
+      "ticker": "133690",
+      "kind": "oversold",
+      "status": "not_collected",
+      "reopenCondition": "Per-input provenance and reviewer-approved strategy bundle"
+    }
+  ],
+  "review": {
+    "owner": null,
+    "approver": null,
+    "reviewedAt": null,
+    "decision": "pending"
+  }
+}
