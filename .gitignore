@@ -48,6 +48,9 @@ next-env.d.ts
 /.omx/
 /.serena/
 /.sisyphus/
+/.opencode/
+/_workspace/
+/opencode.json
 *.swp
 
 # local raw evidence; manifests record filenames and hashes only
