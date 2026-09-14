@@ -10,7 +10,7 @@ Next.js 15 App Router 라우트 루트. 파일 시스템 기반 라우팅 규약
 
 | File | Description |
 |------|-------------|
-| `layout.tsx` | 루트 레이아웃 - Geist/Geist Mono 폰트 로드, `ThemeProvider`(next-themes) 래핑, `<Toaster />`(sonner) 마운트, 메타데이터 설정 |
+| `layout.tsx` | 루트 레이아웃 - 네트워크 독립 시스템 폰트 토큰, `ThemeProvider`(next-themes) 래핑, `<Toaster />`(sonner) 마운트, 메타데이터 설정 |
 | `page.tsx` | 홈(`/`) 페이지 - `Header` + `HeroSection` + `FeaturesSection` + `CTASection` + `Footer` 구성 |
 | `globals.css` | TailwindCSS v4 임포트, `tw-animate-css`, oklch 기반 라이트/다크 테마 CSS 변수 (shadcn/ui new-york), `@layer base` 기본 스타일 |
 | `favicon.ico` | 브라우저 탭 아이콘 (App Router 규약에 따라 이 위치) |
@@ -38,7 +38,7 @@ Next.js 15 App Router 라우트 루트. 파일 시스템 기반 라우팅 규약
 ### Common Patterns
 - 페이지: `bg-background flex min-h-screen ... ` 형태의 풀스크린 컨테이너
 - 메타데이터 한국어 작성
-- 폰트는 `next/font/google` Geist 변수형 사용 (`--font-geist-sans`, `--font-geist-mono`)
+- 폰트는 `globals.css`의 네트워크 독립 시스템 sans/mono stack을 사용한다. 외부 폰트 다운로드를 빌드 필수 조건으로 만들지 않는다.
 
 ## Dependencies
 
@@ -48,7 +48,6 @@ Next.js 15 App Router 라우트 루트. 파일 시스템 기반 라우팅 규약
 - `@/components/layout/*`, `@/components/sections/*` - 홈 페이지 구성
 
 ### External
-- `next/font/google` - Geist 폰트
 - `next-themes` - 테마 시스템
 
 <!-- MANUAL: -->
