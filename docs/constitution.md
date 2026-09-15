@@ -223,7 +223,7 @@
     
 *   **Execute:** `using-git-worktrees` → `subagent-driven-development` → `test-driven-development` → `requesting-code-review` → `finishing-a-development-branch`.
     
-*   **TDD 규칙:** §12.2의 14개 테스트를 해당 DG 착수 시 RED로 먼저 배치한다. 구현 코드보다 테스트가 먼저 커밋된다.
+*   **TDD 규칙:** §12.2 필수 회귀 테스트는 PRD §14 순서상 해당 단계(DG 또는 P0) 착수 시 RED로 먼저 배치한다. #6은 Article III.6·VII.5에 따라 #6-A 현재 마스터 차단을 P0-02 완료 조건으로, #6-B 미래 가격 차단을 DG2.5 완료 조건으로 도입·유지한다. 구현 코드보다 테스트가 먼저 커밋된다.
     
 *   **Gate 검증:** DG 종료 시 Gate 문서의 §11 체크리스트로 통과 조건을, §15 추적 표로 수용기준 15개 커버리지를 대조한다. `/speckit-analyze`(PRD·DG 계획·헌법 정합성)와 `/speckit-converge`(코드 대조) 보고를 보조 자료로 연결한다. 결과는 사람에게 제출.
     
