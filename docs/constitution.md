@@ -1,10 +1,10 @@
 # ETF Price Signal MVP Constitution
 
-> **Constitution Version:** 0.1.0 (DRAFT)  
+> **Constitution Version:** 0.2.0 (DRAFT)
 > **Source of Truth:** `ETF_Price_Signal_MVP_PRD_v1_7_Final.md` — 구현 기준 확정본  
 > **Ratified:** [미정 — 사람 승인 후 기입]  
-> **Last Amended:** [미정]  
-> **적용 대상:** Spec Kit `/speckit.checklist` · `/speckit.analyze` · `/speckit.converge`의 판정 근거이자, Superpowers 모든 서브에이전트 브리프의 Global Constraints
+> **Last Amended:** 2026-09-15 — VII.5 단계별 GREEN 유지로 개정, Gate 검증 도구 역할 정정 (영향: 적용 대상, Art. III.6, Art. VII.5, Development Workflow; 근거: PRD §12.2·§14·P0-02, Spec Kit 1.0.6 도구 동작)
+> **적용 대상:** Gate 문서의 §11 체크리스트·§15 추적 표와 Spec Kit `/speckit-analyze` · `/speckit-converge`의 판정 근거이자, Superpowers 모든 서브에이전트 브리프의 Global Constraints
 > 이 문서는 PRD를 대체하지 않는다. PRD에서 **위반 시 프로젝트 자체가 무효가 되는 조항**만 헌법 수준으로 끌어올린 것이다. 헌법과 PRD가 충돌하면 PRD 원문이 우선하고 헌법을 개정한다.
 
 * * *
@@ -73,7 +73,7 @@
     
 *   **III.5** 재현은 "수집·동결한 데이터 버전에 대한 재현"으로 정의한다. 백필 데이터가 당시 게시본과 완전히 같다고 표현하지 않는다.
     
-*   **III.6** 회귀 테스트 #6("과거 재현에서 현재 마스터와 미래 가격을 읽으려 하면 실패한다")은 모든 DG에서 항상 GREEN이어야 한다. 이 테스트를 skip·xfail 처리하는 것은 헌법 위반이다.
+*   **III.6** 회귀 테스트 #6("과거 재현에서 현재 마스터와 미래 가격을 읽으려 하면 실패한다")은 #6-A 현재 마스터 차단(P0-02 완료 조건)과 #6-B 미래 가격 차단(DG2.5 완료 조건)으로 나눠 증명한다. 각 조각은 해당 단계 착수 시 RED로 도입하고, GREEN이 된 이후의 모든 머지에서 GREEN을 유지한다. 도입된 테스트를 skip·xfail 처리하는 것은 헌법 위반이다.
     
 
 * * *
@@ -162,7 +162,7 @@
     
 *   **VII.4** Gate 통과 판정은 사람이 한다. 에이전트는 통과 조건 체크리스트와 증거를 제출할 뿐 통과를 선언하지 않는다.
     
-*   **VII.5** §12.2 필수 회귀 테스트 14개는 DG1 이후 모든 머지에서 GREEN이어야 한다. 테스트 삭제·완화는 헌법 개정 사안이다.
+*   **VII.5** §12.2 필수 회귀 테스트는 PRD §14 순서상 해당 단계 착수 시 RED로 도입하고, GREEN이 된 이후의 모든 머지에서 GREEN을 유지한다. DG2.5 판정 전까지 14개 모두 GREEN이어야 한다. #6은 #6-A 현재 마스터 차단(P0-02 완료 조건)과 #6-B 미래 가격 차단(DG2.5 완료 조건)으로 나눠 증명한다. 테스트 삭제·완화는 헌법 개정 사안이다.
     
 
 * * *
@@ -225,7 +225,7 @@
     
 *   **TDD 규칙:** §12.2의 14개 테스트를 해당 DG 착수 시 RED로 먼저 배치한다. 구현 코드보다 테스트가 먼저 커밋된다.
     
-*   **Gate 검증:** DG 종료 시 `/speckit.checklist`로 통과 조건 대조, `/speckit.analyze`로 §15 수용기준 15개 커버리지 확인. 결과는 사람에게 제출.
+*   **Gate 검증:** DG 종료 시 Gate 문서의 §11 체크리스트로 통과 조건을, §15 추적 표로 수용기준 15개 커버리지를 대조한다. `/speckit-analyze`(PRD·DG 계획·헌법 정합성)와 `/speckit-converge`(코드 대조) 보고를 보조 자료로 연결한다. 결과는 사람에게 제출.
     
 *   **DG2.5 실패 루프:** `systematic-debugging` → 원인이 버그면 수정 후 동일 `rule_version` 재실행, 원인이 계약이면 `/speckit.converge`로 새 `rule_version` 태스크 생성 → 사람 승인 → 재실행.
     
