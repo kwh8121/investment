@@ -5,7 +5,7 @@ import { describe, it } from 'node:test'
 import dg2Input from '../docs/plan/gates/DG2-evidence-input.template.json' with { type: 'json' }
 import dg3Input from '../docs/plan/gates/DG3-evidence-input.template.json' with { type: 'json' }
 import dg4Input from '../docs/plan/gates/DG4-evidence-input.json' with { type: 'json' }
-import { evaluateProjectState } from '../src/lib/etf/gate-validation.ts'
+import { evaluateProjectState } from '../src/lib/legacy/etf/gate-validation.ts'
 
 const read = (path: string) => fs.readFileSync(path, 'utf8')
 

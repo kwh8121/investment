@@ -5,20 +5,20 @@ import {
   DG2_SAMPLE_SELECTOR_VERSION,
   DG2_SAMPLE_SIZE,
   selectDg2SampleByTradeValue,
-} from '../src/lib/etf/collection.ts'
+} from '../../src/lib/legacy/etf/collection.ts'
 import type {
   DailyQuoteRecord,
   UniverseFilterDecision,
-} from '../src/lib/etf/collection.ts'
+} from '../../src/lib/legacy/etf/collection.ts'
 import {
   evaluateApprovalState,
   evaluateDg2,
   evaluateDg3,
-} from '../src/lib/etf/gate-validation.ts'
+} from '../../src/lib/legacy/etf/gate-validation.ts'
 import type {
   Dg2PriceVerification,
   Dg2SampleSelectionEvidence,
-} from '../src/lib/etf/gate-validation.ts'
+} from '../../src/lib/legacy/etf/gate-validation.ts'
 
 const tickers = ['069500', '102110', '229200', '360750', '133690']
 const pilotSignalAsOf = '2026-08-03'

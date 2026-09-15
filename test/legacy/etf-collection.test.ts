@@ -8,11 +8,11 @@ import {
   InMemoryCollectionRepository,
   qualityFlags,
   selectDg2SampleByTradeValue,
-} from '../src/lib/etf/collection.ts'
+} from '../../src/lib/legacy/etf/collection.ts'
 import type {
   DailyQuoteRecord,
   UniverseFilterDecision,
-} from '../src/lib/etf/collection.ts'
+} from '../../src/lib/legacy/etf/collection.ts'
 
 const config = {
   version: 'korean-etf-universe-v1',

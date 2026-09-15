@@ -12,7 +12,6 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "test:task-005": "node --experimental-strip-types --test test/etf-pipeline.test.ts",
-    "test:task-006": "node --experimental-strip-types --test test/etf-collection.test.ts",
     "test:task-007": "node --experimental-strip-types --test test/etf-strategy.test.ts",
     "test:task-008": "node --experimental-strip-types --test test/etf-backtest.test.ts",
     "test:task-009": "node --experimental-strip-types --test test/etf-scanner.test.ts",
@@ -32,12 +31,13 @@
     "capture:krx-etf-daily": "node --env-file=.env --experimental-strip-types scripts/capture-krx-etf-daily.ts",
     "capture:kiwoom-etf-historical-daily": "node --experimental-strip-types scripts/capture-kiwoom-etf-historical-daily.ts",
     "test:forward-validation": "node --experimental-strip-types --test test/forward-validation.test.ts",
-    "test:gate-validation": "node --experimental-strip-types --test test/gate-validation.test.ts",
+    "test:legacy": "node --experimental-strip-types --test \"test/legacy/*.test.ts\"",
+    "test:v17-contract": "node --experimental-strip-types --test test/v17-selection-source-contract.test.ts",
     "test:e2e": "playwright test",
     "status:check": "node --experimental-strip-types --test test/project-status.test.ts",
     "test:deployment-config": "node --experimental-strip-types --test test/deployment-config.test.ts",
     "test:font-loading": "node --experimental-strip-types --test test/font-loading.test.ts",
-    "check-all": "npm run status:check && npm run test:deployment-config && npm run test:font-loading && npm run test:dg3-evidence && npm run test:dg3-adapter && npm run test:dg2-evidence && npm run test:dg2-adapter && npm run test:kiwoom-dg2-distribution && npm run test:bounded-concurrency && npm run test:kiwoom-etf-historical-daily && npm run test:kiwoom-etf-historical-daily-run && npm run test:krx-etf-daily-market-data && npm run typecheck && npm run lint && npm run format:check",
+    "check-all": "npm run test:v17-contract && npm run status:check && npm run test:deployment-config && npm run test:font-loading && npm run test:dg3-evidence && npm run test:dg3-adapter && npm run test:dg2-evidence && npm run test:dg2-adapter && npm run test:kiwoom-dg2-distribution && npm run test:bounded-concurrency && npm run test:kiwoom-etf-historical-daily && npm run test:kiwoom-etf-historical-daily-run && npm run test:krx-etf-daily-market-data && npm run typecheck && npm run lint && npm run format:check",
     "prepare": "husky"
   },
   "dependencies": {

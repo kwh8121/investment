@@ -43,8 +43,5 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-      - name: Run gate tests
-        run: npm run test:gate-validation
-
       - name: Run repository checks
         run: npm run check-all
