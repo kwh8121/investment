@@ -1,6 +1,6 @@
 ---
 name: "speckit-converge"
-description: "Assess the current codebase against the feature's spec, plan, and tasks, then append any remaining unbuilt work as new tasks to tasks.md so implement can complete it."
+description: "Assess the current codebase against this repo's approved plan, gate evidence, and non-canonical Spec Kit artifacts, then route remaining gaps without invoking prohibited Spec Kit implementation flows."
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
   author: "github-spec-kit"
@@ -61,14 +61,42 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Goal
 
-Close the gap between what a feature's specification, plan, and tasks call for and what the
-codebase currently implements. Read `spec.md`, `plan.md`, and `tasks.md` as the **sole
-source of intent** (with the constitution as governing constraints), assess the current
-state of the code, determine which requirements, acceptance criteria, plan decisions, and
-existing tasks are unmet, incomplete, or only partially satisfied, and **append each piece
-of remaining work as a new, traceable task** at the bottom of `tasks.md` so that
-`/speckit-implement` can complete it. This command MUST run only after
-`/speckit-implement` has run on the current `tasks.md`, and after `/speckit-tasks` has produced a complete `tasks.md`.
+Close the gap between this repository's approved DG plan, gate evidence, any existing
+non-canonical Spec Kit artifacts, and what the codebase currently implements. Treat
+`docs/ETF_Price_Signal_MVP_PRD_v1_7_Final.md`, `docs/constitution.md`,
+`docs/ROADMAP-v1.7.md`, and the approved implementation plan under `docs/plan/` as the
+canonical source of intent. `spec.md`, `plan.md`, and `tasks.md` under `.specify`
+or a feature directory are auxiliary only.
+
+Run this command after a Superpowers implementation and review pass, not before it.
+Determine which requirements, acceptance criteria, plan decisions, and existing tasks are
+unmet, incomplete, or only partially satisfied, then route remaining gaps to one of the
+human-controlled destinations listed in the project override below.
+
+## Project Override: ETF Price Signal MVP v1.7
+
+스펙은 PRD v1.7 Final로 확정됐으며, 재설계·재서술하지 않는다.
+
+This repository allows Spec Kit only as an auxiliary DG evidence checker. The canonical
+implementation flow is the Superpowers DG flow recorded in `AGENTS.md`,
+`docs/ROADMAP-v1.7.md`, and the approved plan under `docs/plan/`.
+
+Allowed Spec Kit helper commands for this project:
+
+- `/speckit-analyze`
+- `/speckit-converge`
+
+Do not suggest, invoke, auto-handoff to, or treat output from these prohibited Spec Kit
+commands as the project workflow: `/speckit-specify`, `/speckit-clarify`,
+`/speckit-plan`, `/speckit-research`, `/speckit-quickstart`, `/speckit-implement`,
+`/speckit-checklist`, `/speckit-tasks`, `/speckit-taskstoissues`.
+
+Remaining gaps must be routed to one of these destinations:
+
+- append traceable items to a non-canonical derived `tasks.md`, when one already exists
+- record individual in-progress work in Linear
+- request a human-approved update to the canonical implementation plan under `docs/plan/`
+- record DG evidence or residual risk under `docs/plan/gates/`
 
 This is **not** a diff tool and does **not** track changes. It assesses the present state
 of the code relative to the feature's artifacts — no git, no branch comparison, no history.
@@ -81,8 +109,8 @@ of the code relative to the feature's artifacts — no git, no branch comparison
 - modify `spec.md` or `plan.md` in any way;
 - rewrite, renumber, reorder, or delete any existing task (including tasks from a prior
   Convergence phase);
-- modify, create, or delete any application code — completing the appended tasks is the
-  job of `/speckit-implement`.
+- modify, create, or delete any application code — completing any remaining tasks belongs
+  to the approved Superpowers implementation and review flow, not to a Spec Kit command.
 
 When the codebase already satisfies everything, the command MUST leave `tasks.md`
 **byte-for-byte unchanged** (no empty Convergence header) and report a clean result.
@@ -103,8 +131,9 @@ Run `.specify/scripts/bash/check-prerequisites.sh --json --require-spec --requir
 - TASKS = FEATURE_DIR/tasks.md
 - CONSTITUTION = `.specify/memory/constitution.md` (if present)
 If `spec.md`, `plan.md`, or `tasks.md` is missing, STOP with a clear, actionable message naming the
-prerequisite command to run (`/speckit-specify` for a missing spec, `/speckit-plan` for a missing plan,
-`/speckit-tasks` for missing tasks). Do not produce partial output.
+missing artifact. Do not instruct the user to run a prohibited Spec Kit command. Route the
+gap to the approved canonical plan, DG gate evidence, a non-canonical derived `tasks.md`,
+or Linear.
 For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
 ### 2. Load Artifacts (Progressive Disclosure)
@@ -233,8 +262,8 @@ Append to the **end** of `tasks.md`, per the append contract:
 ### 8. Provide Next Actions (Handoff)
 
 - On `tasks_appended`: state how many tasks were appended under which phase, and recommend
-  running `/speckit-implement` to complete them; note that a follow-up converge
-  run will find fewer or no remaining items.
+  resolving them through the approved Superpowers implementation and review flow; note
+  that a follow-up converge run should find fewer or no remaining items.
 - On `converged`: recommend proceeding to review / opening a PR. No further implement pass
   is needed for this feature's specified scope.
 

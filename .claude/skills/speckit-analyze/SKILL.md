@@ -1,6 +1,6 @@
 ---
 name: "speckit-analyze"
-description: "Perform a non-destructive cross-artifact consistency and quality analysis across spec.md, plan.md, and tasks.md after task generation."
+description: "Perform a non-destructive auxiliary consistency analysis for this repo's approved plan, gate evidence, and any non-canonical Spec Kit artifacts."
 argument-hint: "Optional focus areas for analysis"
 compatibility: "Requires spec-kit project structure with .specify/ directory"
 metadata:
@@ -57,7 +57,27 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Goal
 
-Identify inconsistencies, duplications, ambiguities, and underspecified items across the three core artifacts (`spec.md`, `plan.md`, `tasks.md`) before implementation. This command MUST run only after `/speckit-tasks` has successfully produced a complete `tasks.md`.
+Identify inconsistencies, duplications, ambiguities, and underspecified items across the approved plan, gate evidence, and any existing Spec Kit artifacts.
+
+## Project Override: ETF Price Signal MVP v1.7
+
+스펙은 PRD v1.7 Final로 확정됐으며, 재설계·재서술하지 않는다.
+
+This repository allows Spec Kit only as an auxiliary DG evidence checker. The canonical implementation flow is the Superpowers DG flow recorded in `AGENTS.md`, `docs/ROADMAP-v1.7.md`, and the approved plan under `docs/plan/`.
+
+Allowed Spec Kit helper commands for this project:
+
+- `/speckit-analyze`
+- `/speckit-converge`
+
+Do not suggest, invoke, auto-handoff to, or treat output from these prohibited Spec Kit commands as the project workflow: `/speckit-specify`, `/speckit-clarify`, `/speckit-plan`, `/speckit-research`, `/speckit-quickstart`, `/speckit-implement`, `/speckit-checklist`, `/speckit-tasks`, `/speckit-taskstoissues`.
+
+If the analysis finds a gap, report it as evidence for one of these human-controlled destinations instead of routing to a prohibited command:
+
+- the approved canonical implementation plan under `docs/plan/`
+- DG gate evidence under `docs/plan/gates/`
+- a non-canonical derived `tasks.md`, when one already exists
+- Linear, when individual in-progress task tracking is needed
 
 ## Operating Constraints
 
@@ -75,7 +95,7 @@ Run `.specify/scripts/bash/check-prerequisites.sh --json --require-spec --requir
 - PLAN = FEATURE_DIR/plan.md
 - TASKS = FEATURE_DIR/tasks.md
 
-Abort with an error message if any required file is missing (instruct the user to run missing prerequisite command).
+Abort with an error message if any required file is missing. Do not instruct the user to run a prohibited Spec Kit command; instead, name the missing artifact and route the gap to the approved plan, gate evidence, a non-canonical derived `tasks.md`, or Linear.
 For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
 ### 2. Load Artifacts (Progressive Disclosure)
@@ -199,9 +219,9 @@ Output a Markdown report (no file writes) with the following structure:
 
 At end of report, output a concise Next Actions block:
 
-- If CRITICAL issues exist: Recommend resolving before `/speckit-implement`
-- If only LOW/MEDIUM: User may proceed, but provide improvement suggestions
-- Provide explicit command suggestions: e.g., "Run /speckit-specify with refinement", "Run /speckit-plan to adjust architecture", "Manually edit tasks.md to add coverage for 'performance-metrics'"
+- If CRITICAL issues exist: recommend resolving them before the next Superpowers implementation or review pass.
+- If only LOW/MEDIUM issues exist: the user may proceed with the approved DG flow, but include concrete improvement suggestions.
+- Provide explicit destinations for remediation: the approved canonical plan, DG gate evidence, a non-canonical derived `tasks.md`, or Linear. Do not suggest prohibited Spec Kit commands.
 
 ### 8. Offer Remediation
 
