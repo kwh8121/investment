@@ -4,8 +4,8 @@
 > **전역 제약:** `docs/constitution.md`<br>
 > **개발 방법론:** `docs/ETF Price Signal MVP_Spec Kit + Superpowers.md`<br>
 > **프로그램 계획:** `docs/superpowers/plans/2026-09-14-etf-price-signal-mvp-v17-program.md`<br>
-> **상태 (2026-09-14):** DG0 증거 준비 중 — 사람의 Gate 판정 전<br>
-> **다음 작업:** 기존 문서·코드·테스트·Gate 증거의 v1.7 차이 매핑
+> **상태 (2026-09-15):** DG0 판정 대기 — 사람의 Gate 판정 전<br>
+> **다음 작업:** DG0 사람 판정 (`docs/plan/gates/DG0-v17-contract-unification.md`)
 
 ## 목적
 
@@ -18,7 +18,7 @@
 | v1.7 제품 스펙          | 확정                 | `docs/ETF_Price_Signal_MVP_PRD_v1_7_Final.md`                                           |
 | 헌법                    | 초안, 사람 비준 대기 | `docs/constitution.md`; PRD와 충돌 시 PRD 우선                                          |
 | 개발 방법론             | 채택                 | 경량 Spec Kit + 전담 Superpowers; `docs/ETF Price Signal MVP_Spec Kit + Superpowers.md` |
-| DG0                     | 증거 준비 중         | `docs/plan/gates/DG0-v17-contract-unification.md`; 사람 판정 전                         |
+| DG0                     | 판정 대기            | `docs/plan/gates/DG0-v17-contract-unification.md`; 사람 판정 전                         |
 | DG1~DG4                 | 미착수               | DG0 및 각 선행 Gate의 사람 판정이 필요                                                  |
 | 기존 P0-01~10 구현/증거 | 역사적 참조          | v1.7 충족 증거로 사용 금지; DG0 매핑 후에만 재채택 가능                                 |
 
