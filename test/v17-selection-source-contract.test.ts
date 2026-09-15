@@ -56,4 +56,8 @@ describe('v1.7 selection source contract (PRD §11 DG0, §15)', () => {
     assert.doesNotMatch(workflow, /test:gate-validation|test:legacy/)
     assert.doesNotMatch(checkAll, /test:gate-validation|test:legacy/)
   })
+
+  it('keeps the v1.7 status check independent of legacy evaluators', () => {
+    assert.doesNotMatch(read('test/project-status.test.ts'), LEGACY_IMPORT)
+  })
 })
