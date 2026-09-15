@@ -115,27 +115,35 @@ PRD §15의 본문은 제품 사실의 유일한 정본으로 유지한다. 아�
 - `npm run check-all`: **PASS**. status/deployment/font/DG evidence/adapters/typecheck/lint/prettier가 모두 통과했다. 이 결과는 레거시 도메인 동작이 v1.7을 충족한다는 뜻이 아니다.
 - `npm run build`: 로컬 기본 작업 트리에서는 Turbopack CSS helper의 로컬 포트 바인딩이 `Operation not permitted (os error 1)`로 거부되어 검증 불가였다. 동일 기준선의 GitHub Actions Quality run은 Turbopack build 성공을 기록했으나, 이 DG의 로컬 실행 결과를 GREEN으로 대체하지 않는다.
 
-### PR head `4e1655c` 기준 검증
+### PR #2 head `4e1655c` 기준 과거 검증
 
 - 문서 형식 검증: `npx prettier --write docs/plan/gates/DG0-v17-contract-unification.md docs/superpowers/plans/2026-09-14-etf-price-signal-mvp-v17-dg0.md` 후 `npm run format:check` **PASS**; `git diff --check` **PASS**.
 - 전체 `npm run check-all`: **PASS**. status/deployment/font/DG evidence/adapters/typecheck/lint/prettier가 모두 통과했다. 문서 감사와 레거시 테스트 통과는 v1.7 도메인 기능이 GREEN이라는 뜻이 아니다.
 - `check-all` 밖의 레거시 테스트: `etf-pipeline`, `etf-collection`, `etf-strategy`, `etf-backtest`, `etf-scanner`, `etf-risk`, `forward-validation`, `gate-validation`, `research-inbox`, `research-guide`, `task-014-qa`를 하나의 Node 테스트 실행으로 확인해 **11/11 PASS**. 이 결과도 레거시 계약의 실행 사실일 뿐 v1.7 충족 증거는 아니다.
 - `npm run build`: **검증 불가 (환경 오류)**. Turbopack이 `src/app/globals.css [app-client] (css)` 처리 중 helper 프로세스의 로컬 포트 바인딩을 시도했고, 실행 샌드박스가 `Operation not permitted (os error 1)`로 거부했다. 이는 현재 변경에 의한 애플리케이션 실패로 판정하지 않으며, build GREEN 주장도 하지 않는다.
 - 다른 환경 증거: PR #2의 [GitHub Actions Quality run 34825502447](https://github.com/kwh8121/investment/actions/runs/34825502447)는 commit `4e1655c`에서 Build application, browser QA, gate tests, repository checks 성공을 기록한다. 이 결과는 로컬 환경 오류를 GREEN으로 대체하지 않고, CI 증거로만 사용한다.
+
+### 현 브랜치 `feature/dg0-alignment` 로컬 검증
+
+이 절은 PR #2 병합 이후 `feature/dg0-alignment` 브랜치에서 수행한 DG0 정합화 작업의 로컬 증거다. 원격 검토와 CI는 PR #3에서 추적한다.
+
 - DG0 정합화 로컬 커밋:
   - `c36eeb9`: DG0 정합화 실행 계획 승인 기록
   - `a58b3a3`: DG0 계획 리뷰 수정 반영
   - `46cf6e8`: v1.7 선정 원천 계약 격리
   - `3f953ee`: v1.7 상태 검사와 레거시 Gate 스냅샷 검사 분리
   - `9861db4`: 헌법 VII.5 단계별 GREEN 유지와 Gate 검증 도구 역할 개정
+  - `1ce31ef`: DG0 테스트 단계 책임 정합화
   - `7b4cc1b`: Spec Kit 역할 정정과 DG0 보조 보고 추가
+  - `6f244dd`: Spec Kit 보조 도구 범위 제한
+  - `36c1ac4`: DG0 정합화 증거 제출 기록
 - 작업 1 RED/GREEN: `test/v17-selection-source-contract.test.ts`를 RED로 추가한 뒤 `src/lib/etf/selection-source.ts`와 legacy 이동으로 GREEN. `npm run test:legacy`, `npm run status:check`, `npm run check-all`, `git diff --check` PASS.
 - 작업 2 RED/GREEN: `status:check`의 legacy import 차단 가드를 RED로 추가한 뒤 `test/project-status.test.ts`를 v1.7 상태 검사로 교체하고 legacy 스냅샷 검사를 `test/legacy/legacy-gate-status.test.ts`로 이관. `npm run status:check`, `npm run test:v17-contract`, `npm run test:legacy`, `npm run check-all`, `git diff --check` PASS.
 - 작업 3 GREEN: `docs/constitution.md` 0.2.0 개정 후 grep 확인, `npm run check-all`, `git diff --check` PASS.
 - 작업 4 GREEN: `specify init --here --force --non-interactive --integration claude --ignore-agent-tools` 전후 기존 tracked `.claude/agents`, `.claude/commands`, `.claude/hooks`, `.claude/settings.local.json` diff 없음. `SPECIFY_FEATURE_DIRECTORY=docs/plan/gates/speckit/dg0-v17 .specify/scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks`, `npm run check-all`, `git diff --check` PASS.
 - Spec Kit 보조 증거: `docs/plan/gates/speckit/dg0-v17/analyze.md`, `docs/plan/gates/speckit/dg0-v17/tasks.md`. converge 보조 점검은 새 잔여 갭 없음으로 기록했다.
 - migration 적용 여부: 로컬 저장소에서 `supabase/` 디렉터리와 추적 환경 파일은 발견되지 않았고, legacy SQL은 `migrations/001_task005_korean_etf_pipeline.sql`, `migrations/002_task007_strategy_scorecards.sql`만 존재한다. 실제 Supabase 프로젝트·테이블 존재 여부는 이 세션에서 조회하지 않았으며, Owner가 판정 전 읽기 전용 SQL로 확인해야 한다.
-- PR/CI 증거: 이 문서 갱신 시점에는 브랜치를 아직 원격 PR로 만들지 않았다. 로컬 `npm run build`는 기존 Turbopack 포트 바인딩 환경 오류 때문에 GREEN으로 주장하지 않는다. 브랜치 푸시 후 GitHub Actions build 결과를 CI 증거로만 연결한다.
+- PR/CI 증거: PR #3을 생성했다. GitHub Actions Quality run 34919904846은 head `36c1ac4`에서 Build application, browser QA, repository checks 성공을 기록했다. 로컬 `npm run build`는 기존 Turbopack 포트 바인딩 환경 오류 때문에 GREEN으로 주장하지 않으며, PR에 새 커밋이 추가되면 최신 GitHub Actions 결과를 다시 확인한다.
 
 ## DG0 §11 체크리스트와 사람 결정 기록
 
@@ -163,7 +171,7 @@ PRD §15의 본문은 제품 사실의 유일한 정본으로 유지한다. 아�
 
 - Approver가 별도로 DG0 `Go` 또는 `No-Go`를 판정한다.
 - Owner가 실제 Supabase 프로젝트·테이블 존재 여부를 읽기 전용으로 확인하고, 그 결과를 판정 근거에 포함할지 결정한다.
-- 브랜치 PR과 CI가 생성되면 GitHub Actions build 결과를 CI 증거로 연결한다.
+- PR #3의 최신 GitHub Actions build 결과를 병합 전 다시 확인한다.
 
 ## 판정 경계
 
