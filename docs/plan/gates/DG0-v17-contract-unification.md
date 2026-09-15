@@ -11,17 +11,17 @@
 
 이 절은 DG0 정합화 작업을 실행하기 위한 사람 결정 기록이다. DG0 통과 판정이 아니며, DG1 이상 Gate 의존 구현을 시작할 근거로 사용하지 않는다.
 
-| 결정                    | 승인값                           | 적용 기록                                                                                                                                                |
-| ----------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1-A 키움 선정 계약 처리 | A1 legacy 격리                   | `46cf6e8`: 키움 선정 계약과 관련 테스트를 legacy 경로로 이동하고, v1.7 경로에는 KRX 선정 원천 계약만 둔다.                                               |
-| 1-B 코드 격리 범위      | B1 선정 원천 계약만              | `46cf6e8`: 전략·백테스트·Scanner·위험·전향평가·리서치·대시보드 UI는 이번 코드 이동 대상에서 제외하고, v1.7 완료 증거에서도 제외한다.                     |
-| 2 헌법 VII.5            | 2A' 단계별 GREEN 유지 및 #6 분리 | `9861db4`: #6-A 현재 master 차단은 P0-02에서, #6-B 미래 가격 차단은 DG2.5에서 최초 GREEN으로 증명한다고 헌법에 반영했다.                                 |
-| 3 Spec Kit              | 3A' 초기화 + 역할 정정           | `7b4cc1b`: `speckit-analyze`와 `speckit-converge`만 보조 도구로 남기며, `tasks.md`는 정본이 아닌 파생 색인으로 둔다.                                     |
-| 4 migration 적용 여부   | 4A Owner 읽기 전용 조회          | 로컬 저장소에는 `supabase/` 디렉터리와 추적 환경 파일이 없고 legacy `migrations/`만 있다. 실제 Supabase SQL 조회는 Owner 권한으로 판정 전 별도 확인한다. |
+| 결정                    | 승인값                           | 적용 기록                                                                                                                                                                                                            |
+| ----------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1-A 키움 선정 계약 처리 | A1 legacy 격리                   | `46cf6e8`: 키움 선정 계약과 관련 테스트를 legacy 경로로 이동하고, v1.7 경로에는 KRX 선정 원천 계약만 둔다.                                                                                                           |
+| 1-B 코드 격리 범위      | B1 선정 원천 계약만              | `46cf6e8`: 전략·백테스트·Scanner·위험·전향평가·리서치·대시보드 UI는 이번 코드 이동 대상에서 제외하고, v1.7 완료 증거에서도 제외한다.                                                                                 |
+| 2 헌법 VII.5            | 2A' 단계별 GREEN 유지 및 #6 분리 | `9861db4` 및 2026-09-15 kwh8121 후속 승인: #6-A 현재 master 차단과 #6-B 미래 가격·상태 차단을 모두 P0-02 완료 조건의 최초 RED→GREEN으로 두고, DG2.5에서는 과거 재현 Gate 차원의 재검증을 수행한다고 헌법에 반영했다. |
+| 3 Spec Kit              | 3A' 초기화 + 역할 정정           | `7b4cc1b`: `speckit-analyze`와 `speckit-converge`만 보조 도구로 남기며, `tasks.md`는 정본이 아닌 파생 색인으로 둔다.                                                                                                 |
+| 4 migration 적용 여부   | 4A Owner 읽기 전용 조회          | 로컬 저장소에는 `supabase/` 디렉터리와 추적 환경 파일이 없고 legacy `migrations/`만 있다. 실제 Supabase SQL 조회는 Owner 권한으로 판정 전 별도 확인한다.                                                             |
 
 승인 정본 계획은 `docs/plan/2026-09-15-dg0-alignment.md`다. 기존 초안 `docs/superpowers/plans/2026-09-15-etf-price-signal-mvp-v17-dg0-alignment.md`는 정본 승격 후 제거해 중복 사본을 남기지 않는다.
 
-Spec Kit 초기화는 `specify init --force` 전후로 기존 추적 `.claude/agents/**`, `.claude/commands/**`, `.claude/hooks/**`, `.claude/settings.local.json` 변경 여부를 검사한다. 변경이 발견되면 자동 복구하지 않고 중단하며 diff를 이 Gate 증거에 기록한다.
+Spec Kit 초기화는 `specify init --force` 전후로 기존 추적 `.claude/skills/**`, `.claude/agents/**`, `.claude/commands/**`, `.claude/hooks/**`, `.claude/settings.local.json` 변경 여부를 검사한다. Repo-local skill override 덮어쓰기 위험과 점검 규칙은 `docs/ETF Price Signal MVP_Spec Kit + Superpowers.md`에 둔다. 변경이 발견되면 자동 복구하지 않고 중단하며 diff를 이 Gate 증거에 기록한다.
 
 `npm run build` 증거는 로컬과 CI를 분리한다. 로컬 Turbopack 포트 바인딩 권한 오류는 검증 불가로 남기고, GitHub Actions build 성공은 CI 증거로만 연결한다.
 
@@ -47,14 +47,15 @@ Spec Kit 초기화는 `specify init --force` 전후로 기존 추적 `.claude/ag
 | `src/lib/etf/kiwoom-etf-historical-daily.ts`, `kiwoom-dg2-distribution-adapter.ts`, `scripts/capture-kiwoom-etf-historical-daily.ts` 및 관련 테스트      | 키움 일별 추이·분배 관련 응답과 capture checkpoint를 다룬다                                                                                                   | 키움은 anchor·현재 마스터·대표 5종 대조 보조 역할만 허용하며, 분배 관련 필드는 계산에 사용하지 않는다                                                                          | `MODIFY_OR_REPLACE`          | KRX 정본 대체·자동 계산 경로를 제거 또는 격리하고, 보조 대조 근거만 DG1에 재채택                                                         |
 | `src/lib/legacy/etf/collection.ts`, `src/lib/legacy/etf/gate-validation.ts`, `test/legacy/etf-collection.test.ts`, `test/legacy/gate-validation.test.ts` | `DG2_SAMPLE_SELECTOR_VERSION`과 `Dg2SampleSelection.source`가 `kiwoom`으로 고정되고, 키움 외 시세를 거부한다. 현재 master, `fxRate: 1`, `dividend`도 포함한다 | §11 및 §15-2의 KRX 선정 원천과 직접 충돌하며, 과거 유니버스의 현재 master 사용 및 환율·분배금 계산은 §1.2 비목표와 충돌한다                                                    | `OUT_OF_SCOPE_OR_HISTORICAL` | `46cf6e8`에서 legacy 경로로 격리했다. CI와 `check-all`에서는 실행하지 않고, 필요 시 `npm run test:legacy`로 역사적 동작만 수동 확인한다. |
 | `src/lib/etf/scanner.ts`, `test/etf-scanner.test.ts`                                                                                                     | 기존 Scanner가 전략 평가·G0~G4·포트폴리오 상관관계를 입력으로 받아 순위를 만든다                                                                              | Scanner 자체는 v1.7 범위이나 현 계약은 부록 A/B·미래 접근 차단 및 공통 선정 엔진과 일치하지 않는다                                                                             | `MODIFY_OR_REPLACE`          | DG2 이후 v1.7 Scanner/공통 선정/재현 계약으로 교체                                                                                       |
-| `src/lib/etf/strategy.ts`, `backtest.ts`, `forward-validation.ts`, `risk.ts` 및 관련 테스트                                                              | 기존 점수·추천·포트폴리오·미래 성과/FX/분배 수익 계산을 구현한다                                                                                              | FX·분배금·자동 전향평가·매매/포트폴리오는 PRD §1.2 비목표다                                                                                                                    | `OUT_OF_SCOPE_OR_HISTORICAL` | v1.7 도메인 경로와 완료 증거에서 격리하고 역사 자산으로 보존                                                                             |
+| `src/lib/etf/strategy.ts`, `backtest.ts`, `forward-validation.ts`, `risk.ts` 및 관련 테스트                                                              | 기존 점수·추천·포트폴리오·미래 성과/FX/분배 수익 계산을 구현한다                                                                                              | FX·분배금·자동 전향평가·매매/포트폴리오는 PRD §1.2 비목표다                                                                                                                    | `OUT_OF_SCOPE_OR_HISTORICAL` | v1.7 완료 증거에서 제외하고 후속 DG에서 필요한 계약만 교체                                                                               |
 | `src/lib/etf/dg2-evidence.ts`, `dg3-evidence.ts`, `krx-dg3-adapter.ts`, 이전 Gate 문서·입력 템플릿·evidence bundle                                       | 이전 Gate/출처/평가 evidence envelope가 존재한다                                                                                                              | 일부 provenance 검사 방향은 §9와 유사하나, 이전 P0·DG 계약과 Gate 판정은 v1.7에 재사용할 수 없다                                                                               | `OUT_OF_SCOPE_OR_HISTORICAL` | 보존만 하며, 새 v1.7 Gate 문서와 §12.2 회귀 테스트로 다시 증명                                                                           |
 | `migrations/001_task005_korean_etf_pipeline.sql`, `002_task007_strategy_scorecards.sql`                                                                  | 이전 task 모델과 scorecard/candidate gate 테이블을 정의한다                                                                                                   | v1.7 상태 축·필드 승인·raw manifest·calendar/rule version 계약 충족을 입증하지 않았고, 실제 적용 여부도 이 감사 범위에서 확인하지 않았다                                       | `MODIFY_OR_REPLACE`          | 기존 migration 파일은 변경하지 않으며, 적용 상태 확인과 새 migration은 DG1 계획·RED 테스트 후에만 수행                                   |
 | `src/app/page.tsx`, `src/components/product-dashboard.tsx`, `tests/e2e/dashboard.spec.ts`                                                                | Weekly guide·Paper portfolio·미국 ETF·환율/분배금 기여·하드코딩 Scanner 결과를 표시하고 해당 UI를 e2e로 고정한다                                              | PRD §1.2 비목표 및 UI 읽기 모델 경계와 충돌한다                                                                                                                                | `OUT_OF_SCOPE_OR_HISTORICAL` | 사람 승인 후 v1.7 읽기 모델로 교체하거나 역사 화면으로 격리; 현 UI를 v1.7 완료 증거에서 제외                                             |
 | `src/app/layout.tsx`, `globals.css`, `login/page.tsx`, `signup/page.tsx`, `src/components/`의 공통 UI·인증·레이아웃 구성요소                             | 현 제품명·투자 가이드 설명·로그인/가입 및 범용 표시 구성요소를 제공한다                                                                                       | 도메인 선정 규칙은 없지만 현재 제품 표현을 전제하므로, v1.7 읽기 모델·비공개 접근 경계와 맞는지는 별도 확인이 필요하다                                                         | `MODIFY_OR_REPLACE`          | DG3 UI 계획에서 필요한 범용 구성요소만 재검증해 채택하고, 제품 표현·접근 흐름은 v1.7 계약으로 교체                                       |
-| `src/lib/research/guide.ts`, `inbox.ts`, `test/research-guide.test.ts`, `test/research-inbox.test.ts`                                                    | 전략 타입을 import한 리서치 수집·가이드 발행을 구현한다                                                                                                       | 뉴스·리서치 판단은 PRD §1.2 비목표다                                                                                                                                           | `OUT_OF_SCOPE_OR_HISTORICAL` | v1.7 도메인 경로에서 격리하고 자동 선정·발행 증거로 사용 금지                                                                            |
+| `src/lib/research/guide.ts`, `inbox.ts`, `test/research-guide.test.ts`, `test/research-inbox.test.ts`                                                    | 전략 타입을 import한 리서치 수집·가이드 발행을 구현한다                                                                                                       | 뉴스·리서치 판단은 PRD §1.2 비목표다                                                                                                                                           | `OUT_OF_SCOPE_OR_HISTORICAL` | v1.7 완료 증거에서 제외하고 후속 DG에서 필요한 경우 교체                                                                                 |
 | `src/lib/etf/bounded-concurrency.ts`, `test/bounded-concurrency.test.ts`, `test/deployment-config.test.ts`, `test/font-loading.test.ts`                  | 범용 동시성, 배포 경계, 폰트 검사를 제공한다                                                                                                                  | v1.7 도메인 계약을 증명하지 않지만 범위 충돌은 직접 만들지 않는다                                                                                                              | `REUSE_AFTER_DG1_TEST`       | 도메인 구현과 분리해 유지; DG1 §12.2 테스트를 대체하지 않음                                                                              |
-| `test/project-status.test.ts`                                                                                                                            | 이전 DG2~DG4 machine status와 현 ROADMAP 상태 문자열을 함께 검사한다                                                                                          | 레거시 Gate 결과에 의존하므로, 키움 선정 Gate를 폐기·격리하면 `status:check`가 깨질 수 있다                                                                                    | `MODIFY_OR_REPLACE`          | DG0 결정 후 역사 스냅샷 검증과 v1.7 상태 검증을 분리                                                                                     |
+| `test/project-status.test.ts`                                                                                                                            | v1.7 ROADMAP의 DG0 판정 대기 상태와 Gate 문서의 사람 판정 부재가 일치하는지 검사한다                                                                          | 레거시 Gate 결과에 의존하지 않는 v1.7 상태 검사로 교체했다                                                                                                                     | `REUSE_AFTER_DG1_TEST`       | `status:check`에서 계속 실행하고, Go 기록과 ROADMAP `통과` 표기가 어긋나면 실패한다                                                      |
+| `test/legacy/legacy-gate-status.test.ts`                                                                                                                 | 이전 DG2~DG4 machine status와 역사적 ROADMAP 상태 문자열을 검사한다                                                                                           | 레거시 Gate 결과 스냅샷이며 v1.7 Gate 증거가 아니다                                                                                                                            | `OUT_OF_SCOPE_OR_HISTORICAL` | `npm run test:legacy`로만 수동 확인한다                                                                                                  |
 
 ### 인벤토리 커버리지
 
@@ -79,34 +80,34 @@ Spec Kit 초기화는 `specify init --force` 전후로 기존 추적 `.claude/ag
 
 ## PRD §12.2 및 §15 추적 상태
 
-| 항목                                             | DG0 시점 증거 상태                                                                               | 다음 증거 위치                                                                                       |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| §12.2 #1~5, #14 (날짜·anchor·식별자·0/공란·재개) | 기존 테스트는 일부 유사 동작만 다루며 v1.7 계약 RED/GREEN 증거 없음                              | 헌법 VII.5(0.2.0) 단계별 도입 — ROADMAP 순차 작업 표의 단계                                          |
-| §12.2 #6 (현재 master·미래 가격 차단)            | 기존 DG2 evidence에 과거 일자 검사가 있으나 현재 master와 미래 가격 접근 차단의 필수 회귀가 아님 | 헌법 VII.5(0.2.0): #6-A 현재 master 차단은 P0-02, #6-B 미래 가격 차단은 DG2.5에서 최초 GREEN 후 유지 |
-| §12.2 #7~13 (그룹·Scanner·선정·평가·결정성)      | 이전 Scanner/평가 테스트는 범위·계약이 다르므로 v1.7 증거 없음                                   | 헌법 VII.5(0.2.0) 단계별 도입 — ROADMAP 순차 작업 표의 단계                                          |
-| §15 수용 기준 15개                               | 현행 PRD가 정본이며 각 기준을 GREEN으로 연결한 v1.7 코드/Gate 증거 없음                          | DG1~DG4 Gate별 §15 추적 표와 analyze/converge 보조 보고                                              |
+| 항목                                             | DG0 시점 증거 상태                                                                                    | 다음 증거 위치                                                                                                   |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| §12.2 #1~5, #14 (날짜·anchor·식별자·0/공란·재개) | 기존 테스트는 일부 유사 동작만 다루며 v1.7 계약 RED/GREEN 증거 없음                                   | 헌법 VII.5(0.2.0) 단계별 도입 — ROADMAP 순차 작업 표의 단계                                                      |
+| §12.2 #6 (현재 master·미래 가격·상태 차단)       | 기존 DG2 evidence에 과거 일자 검사가 있으나 현재 master와 미래 가격·상태 접근 차단의 필수 회귀가 아님 | 헌법 VII.5(0.2.0): #6-A 현재 master 차단과 #6-B 미래 가격·상태 차단은 P0-02에서 최초 RED→GREEN, DG2.5에서 재검증 |
+| §12.2 #7~13 (그룹·Scanner·선정·평가·결정성)      | 이전 Scanner/평가 테스트는 범위·계약이 다르므로 v1.7 증거 없음                                        | 헌법 VII.5(0.2.0) 단계별 도입 — ROADMAP 순차 작업 표의 단계                                                      |
+| §15 수용 기준 15개                               | 현행 PRD가 정본이며 각 기준을 GREEN으로 연결한 v1.7 코드/Gate 증거 없음                               | DG1~DG4 Gate별 §15 추적 표와 analyze/converge 보조 보고                                                          |
 
 ### PRD §15 개별 수용 기준 상태
 
 PRD §15의 본문은 제품 사실의 유일한 정본으로 유지한다. 아래는 본문을 복제하지 않는 번호별 추적 색인이다.
 
-| §15 기준 | 추적 키워드                | DG0 상태                                                            | 후속 증거 Gate                         |
-| -------- | -------------------------- | ------------------------------------------------------------------- | -------------------------------------- |
-| 1        | 입력 manifest 재현         | 미검증                                                              | DG2.5                                  |
-| 2        | KRX 선정 원천              | 증거 제출 — 판정 대기: `test/v17-selection-source-contract.test.ts` | DG0 계약 통일 → DG1 소스 대조          |
-| 3        | 현재 master·미래 가격 차단 | 미검증                                                              | #6-A는 P0-02, #6-B는 DG2.5 Gate에 기록 |
-| 4        | 식별자 충돌 보존           | 미검증                                                              | DG1                                    |
-| 5        | 게시·비거래·부분·호출 상태 | 미검증                                                              | P0-01 및 DG1                           |
-| 6        | 지수 그룹 비확정           | 미검증                                                              | P0-02~05 및 DG3                        |
-| 7        | 미승인 필드 계산 차단      | 미검증                                                              | DG1 필드 승인 → P0-02~05 및 DG2.5      |
-| 8        | A2/B1 빈 슬롯              | 미검증                                                              | P0-06 공통 선정 엔진 및 DG3            |
-| 9        | Gate 실패 즉시 제거        | 미검증                                                              | P0-06 공통 선정 엔진, DG2.5, DG3       |
-| 10       | 가격수익률 표현 경계       | 미검증                                                              | DG2.5 재현 및 DG3 읽기 모델            |
-| 11       | 분배락 자동 보정 금지      | 미검증                                                              | P0-02~04 및 DG2.5                      |
-| 12       | 만기·검열·분모 분리        | 미검증                                                              | DG2.5                                  |
-| 13       | 평가 기간·발행·블록        | 미검증                                                              | DG2.5                                  |
-| 14       | 가상 손실 수작업           | 미검증                                                              | DG3                                    |
-| 15       | 수익 보장 주장 금지        | 미검증                                                              | DG2.5 및 DG3 표현 경계                 |
+| §15 기준 | 추적 키워드                     | DG0 상태                                                            | 후속 증거 Gate                             |
+| -------- | ------------------------------- | ------------------------------------------------------------------- | ------------------------------------------ |
+| 1        | 입력 manifest 재현              | 미검증                                                              | DG2.5                                      |
+| 2        | KRX 선정 원천                   | 증거 제출 — 판정 대기: `test/v17-selection-source-contract.test.ts` | DG0 계약 통일 → DG1 소스 대조              |
+| 3        | 현재 master·미래 가격·상태 차단 | 미검증                                                              | #6-A/#6-B는 P0-02 최초 GREEN, DG2.5 재검증 |
+| 4        | 식별자 충돌 보존                | 미검증                                                              | DG1                                        |
+| 5        | 게시·비거래·부분·호출 상태      | 미검증                                                              | P0-01 및 DG1                               |
+| 6        | 지수 그룹 비확정                | 미검증                                                              | P0-02~05 및 DG3                            |
+| 7        | 미승인 필드 계산 차단           | 미검증                                                              | DG1 필드 승인 → P0-02~05 및 DG2.5          |
+| 8        | A2/B1 빈 슬롯                   | 미검증                                                              | P0-06 공통 선정 엔진 및 DG3                |
+| 9        | Gate 실패 즉시 제거             | 미검증                                                              | P0-06 공통 선정 엔진, DG2.5, DG3           |
+| 10       | 가격수익률 표현 경계            | 미검증                                                              | DG2.5 재현 및 DG3 읽기 모델                |
+| 11       | 분배락 자동 보정 금지           | 미검증                                                              | P0-02~04 및 DG2.5                          |
+| 12       | 만기·검열·분모 분리             | 미검증                                                              | DG2.5                                      |
+| 13       | 평가 기간·발행·블록             | 미검증                                                              | DG2.5                                      |
+| 14       | 가상 손실 수작업                | 미검증                                                              | DG3                                        |
+| 15       | 수익 보장 주장 금지             | 미검증                                                              | DG2.5 및 DG3 표현 경계                     |
 
 ## 실행 증거 (2026-09-14)
 
@@ -142,9 +143,9 @@ PRD §15의 본문은 제품 사실의 유일한 정본으로 유지한다. 아�
 - 작업 2 RED/GREEN: `status:check`의 legacy import 차단 가드를 RED로 추가한 뒤 `test/project-status.test.ts`를 v1.7 상태 검사로 교체하고 legacy 스냅샷 검사를 `test/legacy/legacy-gate-status.test.ts`로 이관. `npm run status:check`, `npm run test:v17-contract`, `npm run test:legacy`, `npm run check-all`, `git diff --check` PASS.
 - 작업 3 GREEN: `docs/constitution.md` 0.2.0 개정 후 grep 확인, `npm run check-all`, `git diff --check` PASS.
 - 작업 4 GREEN: `specify init --here --force --non-interactive --integration claude --ignore-agent-tools` 전후 기존 tracked `.claude/agents`, `.claude/commands`, `.claude/hooks`, `.claude/settings.local.json` diff 없음. `SPECIFY_FEATURE_DIRECTORY=docs/plan/gates/speckit/dg0-v17 .specify/scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks`, `npm run check-all`, `git diff --check` PASS.
-- Spec Kit 보조 증거: `docs/plan/gates/speckit/dg0-v17/analyze.md`, `docs/plan/gates/speckit/dg0-v17/tasks.md`. converge 보조 점검은 새 잔여 갭 없음으로 기록했다.
+- Spec Kit 보조 증거: `docs/plan/gates/speckit/dg0-v17/analyze.md`, `docs/plan/gates/speckit/dg0-v17/tasks.md`. 이 보고서는 실제 `/speckit-analyze` 또는 `/speckit-converge` 실행 출력이 아니라 설치된 repo-local skill 항목을 따른 수동 자체 점검이며, 이번 증거에는 converge 실행에 근거한 "잔여 갭 없음" 판정이 없다.
 - migration 적용 여부: 로컬 저장소에서 `supabase/` 디렉터리와 추적 환경 파일은 발견되지 않았고, legacy SQL은 `migrations/001_task005_korean_etf_pipeline.sql`, `migrations/002_task007_strategy_scorecards.sql`만 존재한다. 실제 Supabase 프로젝트·테이블 존재 여부는 이 세션에서 조회하지 않았으며, Owner가 판정 전 읽기 전용 SQL로 확인해야 한다.
-- PR/CI 증거: PR #3을 생성했다. GitHub Actions Quality run 34919904846은 head `36c1ac4`에서 Build application, browser QA, repository checks 성공을 기록했다. 로컬 `npm run build`는 기존 Turbopack 포트 바인딩 환경 오류 때문에 GREEN으로 주장하지 않으며, PR에 새 커밋이 추가되면 최신 GitHub Actions 결과를 다시 확인한다.
+- PR/CI 증거: PR #3(`https://github.com/kwh8121/investment/pull/3`)을 생성했다. 리뷰 코멘트에 제공된 사실 기준으로 GitHub Actions Quality run 34919904846은 원격 head `36c1ac4`에서 Build application, browser QA, repository checks 성공을 기록했다. 이후 로컬 후속 커밋(`1ee2b87`, `5e3512a`)은 이 CI run의 대상이 아니며, 새 커밋이 push되면 최신 GitHub Actions 결과를 다시 확인한다. 로컬 `npm run build`는 기존 Turbopack 포트 바인딩 환경 오류 때문에 GREEN으로 주장하지 않는다.
 
 ## DG0 §11 체크리스트와 사람 결정 기록
 
@@ -157,14 +158,14 @@ PRD §15의 본문은 제품 사실의 유일한 정본으로 유지한다. 아�
 ### 폐기·격리 후보
 
 - 키움 선정 계약: `DG2_SAMPLE_SELECTOR_VERSION`, `Dg2SampleSelection.source: 'kiwoom'`, `evaluateDg2`의 키움 원천 검사, 그리고 이를 강제하는 CI `test:gate-validation` 단계와 `check-all`의 `status:check` 연결.
-- 현재 master 기반 역사 유니버스·환율·분배금 계약: `src/lib/etf/collection.ts`와 관련 테스트.
+- 현재 master 기반 역사 유니버스·환율·분배금 계약: `src/lib/legacy/etf/collection.ts`와 관련 테스트.
 - 비목표 기능: `src/components/product-dashboard.tsx` 및 `tests/e2e/dashboard.spec.ts`의 기존 대시보드, `src/lib/research/**`, 기존 포트폴리오·자동 전향평가·위험 모듈과 테스트.
 - 과거 Gate 입력·template·evidence bundle: 역사 스냅샷으로 보존하되 v1.7 Gate 증거와 분리.
 
 ### 기록된 사람 결정
 
 1. 키움 선정 원천 계약과 이를 통과 조건으로 삼는 CI `test:gate-validation` 단계 및 `check-all`의 `status:check`를 v1.7 구현 경로에서 격리하고, KRX 선정 계약으로 교체하는 작업을 승인했다.
-2. 헌법 VII.5는 단계별 GREEN 유지로 개정한다. #6-A 현재 master 차단은 P0-02, #6-B 미래 가격 차단은 DG2.5에서 최초 GREEN으로 증명한다.
+2. 헌법 VII.5는 단계별 GREEN 유지로 개정한다. 2026-09-15 kwh8121의 후속 승인에 따라 #6-A 현재 master 차단과 #6-B 미래 가격·상태 차단은 모두 P0-02 완료 조건에서 최초 GREEN으로 증명하고, DG2.5에서는 과거 재현 Gate 차원의 미래 접근 차단을 재검증한다.
 3. Spec Kit은 초기화하되 `speckit-analyze`와 `speckit-converge`만 보조 도구로 사용한다. `tasks.md`는 정본이 아닌 파생 색인과 converge 잔여 갭 기록이다.
 4. 기존 migration 파일의 실제 적용 여부는 Owner가 읽기 전용으로 확인하고, 적용된 migration은 수정·삭제하지 않는다.
 

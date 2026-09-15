@@ -32,6 +32,10 @@ Spec Kit은 헌법·게이트·대조 기능만 쓰고, 계획 생성과 실행�
 *   `/speckit-analyze` — DG 계획 승인 전·DG 종료 시 PRD(spec)·DG 계획(plan/tasks)·헌법 정합성 보조 점검
     
 *   `/speckit-converge` — DG 종료 시 코드와 PRD·DG 계획 대조, DG2.5 실패 후 잔여 갭을 새 `rule_version` 태스크로 추가
+
+### Spec Kit repo-local override 운영 위험
+
+현재 `.claude/skills/speckit-analyze/`와 `.claude/skills/speckit-converge/`는 이 저장소의 v1.7 방법론에 맞춘 repo-local override다. `specify init --force`, Spec Kit 업그레이드, Claude 통합 재초기화가 실행되면 이 override가 덮어써질 수 있으므로, 실행 전후 tracked `.claude/skills/**`, `.claude/commands/**`, `.claude/hooks/**`, `.claude/settings.local.json` diff를 확인하고 변경이 있으면 Gate 증거에 기록한다.
     
 
 ### Spec Kit — 쓰지 않는 것
