@@ -47,6 +47,8 @@ next-env.d.ts
 .opencode/
 .serena/
 .sisyphus/
+.specify/
+docs/plan/gates/speckit/
 **/AGENTS.md
 docs/guides/
 

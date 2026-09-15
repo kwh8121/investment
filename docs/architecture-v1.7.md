@@ -32,3 +32,5 @@ KRX 정본 + 허용된 키움 보조 조회 (서버 전용)
 ## 구현 상태의 해석
 
 `src/lib/etf/**`, `test/**`, `migrations/**`, `scripts/**`에 존재하는 이전 구현은 DG0 매핑의 감사 대상이다. 파일 존재나 기존 테스트 통과는 v1.7 계약 충족 또는 Gate 통과를 의미하지 않는다. DG별 RED→GREEN 회귀 테스트, `npm run check-all`, `npm run build`, 그리고 사람의 Gate 판정이 새 증거가 된다.
+
+`src/lib/legacy/etf/**`와 `test/legacy/**`는 v1.7 이전 Gate·키움 선정 계약을 보존하는 역사적 증거 경로다. 이 경로의 코드는 현재 v1.7 도메인 경로(`src/lib/etf/**`)와 CI 필수 Gate로 import하지 않으며, 레거시 동작 확인이 필요할 때만 `npm run test:legacy`로 수동 실행한다. `test/project-status.test.ts`는 v1.7 상태 일관성 검사이고, 이전 Gate 상태 스냅샷 검사는 `test/legacy/legacy-gate-status.test.ts`에서만 다룬다.

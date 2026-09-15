@@ -47,8 +47,8 @@ PRD와 헌법이 충돌하면 PRD 원문이 우선한다. 계획·기존 코드�
 2. **DG0:** 기존 문서·코드·테스트·Gate 증거를 v1.7에 매핑하고, 보존/변경/폐기 목록 및 정본 문서 정합화를 완료한다. 사람에게 DG0 체크리스트와 §15 분석을 제출한다.
 3. **DG1:** §12.1 보유 자료 검사 후 P0-01의 날짜 5상태, anchor 완전 수신, 식별자 충돌, 대표 5종 대조, 필드 승인 기록을 구현·검증한다.
 4. **DG2:** 원시 구간 백필, checkpoint, 거래일 달력, 252 거래일 warm-up, 유니버스 diff를 구현·검증한다.
-5. **P0-02~06:** 유니버스·지표·분배 의심 → Scanner A/B → 공통 선정 엔진 순서로 구현한다. UI보다 공통 선정 엔진과 과거 재현의 동일 코드 사용을 먼저 증명한다.
-6. **DG2.5:** 미래 정보 차단, 만기/검열/분모, 부록 A/B 결정성 및 100% 재현을 검증한다. 실패 시 `superpowers:systematic-debugging`을 사용한다. 버그는 같은 `rule_version`으로 재실행하고, 계약/정책 문제는 `/speckit.converge`로 새 버전 태스크를 만든 뒤 사람 승인을 받는다.
+5. **P0-02~06:** 유니버스·지표·분배 의심 → Scanner A/B → 공통 선정 엔진 순서로 구현한다. P0-02 완료 조건에는 #6-A 현재 master 차단과 #6-B 미래 가격·상태 차단의 최초 RED→GREEN을 포함한다. UI보다 공통 선정 엔진과 과거 재현의 동일 코드 사용을 먼저 증명한다.
+6. **DG2.5:** #6-A/#6-B GREEN 유지, 과거 재현 Gate 차원의 미래 접근 차단, 만기/검열/분모, 부록 A/B 결정성 및 100% 재현을 검증한다. 실패 시 `superpowers:systematic-debugging`을 사용한다. 버그는 같은 `rule_version`으로 재실행하고, 계약/정책 문제는 `/speckit-converge`로 새 버전 태스크를 만든 뒤 사람 승인을 받는다.
 7. **DG3:** 불변 관찰 카드와 주간 발행을 구현한다. A 최대 2개/B 최대 1개, 교체·실패 처리, 수작업 전향 추적 경계를 검증한다.
 8. **DG4:** 인증·제한·재시도·복구·지연·품질 차단·원본 보호를 운영 알파 증거로 검증한다.
 
@@ -57,13 +57,13 @@ PRD와 헌법이 충돌하면 PRD 원문이 우선한다. 계획·기존 코드�
 ## Gate and Human Decision Rules
 
 - DG0~DG4는 순차 Gate다. 선행 Gate의 증거와 사람 판정 전에는 후속 Gate 의존 구현을 시작하거나 통과를 주장하지 않는다.
-- 각 DG 종료 시 `/speckit.checklist`로 PRD §11 통과 조건을 대조하고 `/speckit.analyze`로 §15의 15개 수용 기준을 대조한다. 결과는 Gate 증거이며 사람 판정을 대체하지 않는다.
+- 각 DG 종료 시 Gate 문서의 §11 체크리스트로 통과 조건을, §15 추적 표로 15개 수용 기준을 대조한다. `/speckit-analyze`(PRD·DG 계획·헌법 정합성)와 `/speckit-converge`(코드 대조) 보고를 보조 증거로 연결한다. 모두 사람 판정을 대체하지 않는다.
 - 사람이 승인해야 하는 일: `CALC_APPROVED`와 지수 비교 가능성 승격, 정책값 변경, 수동 날짜 상태 변경, `DRAFT → PUBLISHED`, 식별자 다대일 충돌 병합, 가상 손실 단계 재개, DG 통과 판정, 헌법 개정.
 - DG2.5 실패를 수익률로 보정하기 위해 점수·필터·임계값을 자동 튜닝하지 않는다.
 
 ## Test and Quality Requirements
 
-- 코드보다 먼저 PRD §12.2의 해당 필수 회귀 테스트를 failing 상태(RED)로 추가하고, 구현 후 GREEN 출력으로 증명한다. #6 미래정보 차단 테스트는 모든 DG에서 GREEN이며 skip/xfail 금지다.
+- 코드보다 먼저 PRD §12.2의 해당 필수 회귀 테스트를 failing 상태(RED)로 추가하고, 구현 후 GREEN 출력으로 증명한다. #6-A 현재 master 차단과 #6-B 미래 가격·상태 차단은 P0-02 완료 조건에서 최초 GREEN으로 만들고 이후 모든 머지에서 GREEN을 유지하며, skip/xfail 금지다.
 - 각 구현 단계는 대상 Node 테스트 → `npm run check-all` → `npm run build` 순으로 검증한다. `npm run check-all`은 상태 검사, DG 증거/어댑터 테스트, TypeScript typecheck, ESLint, Prettier 검사를 포함한다.
 - 변경한 코드에는 테스트, 변경한 Gate에는 원문 실행 결과·input manifest·체크리스트/분석 링크를 남긴다. 실패 시 원인을 해결하거나 검증 공백을 명시하며 GREEN으로 주장하지 않는다.
 - TypeScript strict와 `@/*` 별칭을 유지한다. App Router는 Server Component를 기본으로 하며 클라이언트 상호작용에만 `'use client'`를 쓴다. UI는 도메인 규칙/외부 데이터 접근이 아닌 읽기 모델 표시에 한정한다.

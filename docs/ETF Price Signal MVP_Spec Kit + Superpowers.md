@@ -18,27 +18,29 @@ Spec Kit은 헌법·게이트·대조 기능만 쓰고, 계획 생성과 실행�
 | PRD의 사실 | 결론에 미치는 영향 |
 | --- | --- |
 | **스펙은 이미 끝났다.** v1.7은 "구현 기준 확정본"이고 부록 A/B에 산식·배점·상태전이까지 고정 | Spec Kit의 `specify / clarify / plan` 생성 단계는 가치가 거의 없고 재서술 위험만 있음 → 생략. Superpowers `brainstorming`도 생략 |
-| **위험은 실행 단계에 있다.** 100% 재현성(P0-07), 미래정보 차단(§4.4), 결측 0 대체 금지, 상태 enum 분리 금지(§9.3), 회귀 테스트 14개(§12.2) | 태스크별 격리 + RED 확인 + 스펙준수 리뷰가 강제되는 Superpowers가 실행을 전담. `/speckit.implement`는 쓰지 않음 |
-| **게이트는 문서로 남겨야 한다.** DG0~DG4 6개(§11), 수용기준 15개(§15), 정책값/검증값 구분(§0.1), 버전별 정정 이력(§9.1), DG2.5 실패 시 "자동 튜닝 금지·새 버전 재실행" | 수작업 체크리스트로는 요구 수준의 추적이 흐트러짐 → Spec Kit의 `constitution / checklist / analyze / converge`만 채택 |
+| **위험은 실행 단계에 있다.** 100% 재현성(P0-07), 미래정보 차단(§4.4), 결측 0 대체 금지, 상태 enum 분리 금지(§9.3), 회귀 테스트 14개(§12.2) | 태스크별 격리 + RED 확인 + 스펙준수 리뷰가 강제되는 Superpowers가 실행을 전담. `/speckit-implement`는 쓰지 않음 |
+| **게이트는 문서로 남겨야 한다.** DG0~DG4 6개(§11), 수용기준 15개(§15), 정책값/검증값 구분(§0.1), 버전별 정정 이력(§9.1), DG2.5 실패 시 "자동 튜닝 금지·새 버전 재실행" | 수작업 체크리스트로는 요구 수준의 추적이 흐트러짐 → Spec Kit의 `constitution / analyze / converge`만 채택 (Gate 조건 대조 표는 Gate 문서) |
 
 * * *
 
 ## 채택 범위
 
-### Spec Kit — 쓰는 것 (4개)
+### Spec Kit — 쓰는 것 (3개)
 
 *   `constitution.md` — §0.1, §4.4, §9.3, §9.4, §11 자동튜닝 금지, §15 전체 + "승인 상태 전이·정책값 변경은 사람만" 조항
     
-*   `/speckit.checklist` — DG0~DG4 통과 조건 6개
+*   `/speckit-analyze` — DG 계획 승인 전·DG 종료 시 PRD(spec)·DG 계획(plan/tasks)·헌법 정합성 보조 점검
     
-*   `/speckit.analyze` — 각 DG 종료 시 수용기준 15개 커버리지 대조
-    
-*   `/speckit.converge` — DG2.5 실패 후 잔여 갭을 새 `rule_version` 태스크로 추가
+*   `/speckit-converge` — DG 종료 시 코드와 PRD·DG 계획 대조, DG2.5 실패 후 잔여 갭을 새 `rule_version` 태스크로 추가
+
+### Spec Kit repo-local override 운영 위험
+
+현재 `.claude/skills/speckit-analyze/`와 `.claude/skills/speckit-converge/`는 이 저장소의 v1.7 방법론에 맞춘 repo-local override다. `specify init --force`, Spec Kit 업그레이드, Claude 통합 재초기화가 실행되면 이 override가 덮어써질 수 있으므로, 실행 전후 tracked `.claude/skills/**`, `.claude/commands/**`, `.claude/hooks/**`, `.claude/settings.local.json` diff를 확인하고 변경이 있으면 Gate 증거에 기록한다.
     
 
 ### Spec Kit — 쓰지 않는 것
 
-*   `specify`, `clarify`, `plan`, `research`, `quickstart`, `implement`
+*   `specify`, `clarify`, `plan`, `research`, `quickstart`, `implement`, `checklist` (Spec Kit 1.0.6의 checklist는 요구사항 문서 품질 점검용이며 코드·Gate 조건을 대조하지 않는다)
     
 *   `spec.md` 자리에는 PRD v1.7 원문을 그대로 둠 (재작성 금지)
     
@@ -65,7 +67,7 @@ Spec Kit은 헌법·게이트·대조 기능만 쓰고, 계획 생성과 실행�
 
 ## 판단을 바꿀 조건
 
-*   **Superpowers 단독으로 축소:** Spec Kit 4개 기능이 DG 두 단계를 지나도록 실질적 갭을 한 번도 잡아내지 못하거나, 두 도구 관리가 개발 시간의 20%를 넘을 때
+*   **Superpowers 단독으로 축소:** Spec Kit 3개 기능이 DG 두 단계를 지나도록 실질적 갭을 한 번도 잡아내지 못하거나, 두 도구 관리가 개발 시간의 20%를 넘을 때
     
 *   **Spec Kit 비중 확대:** 운영 중 정책 변경(rules_v2)이 잦아져 "무엇이 왜 바뀌었나"를 코드 커밋만으로 추적하기 어려워질 때
     
