@@ -15,13 +15,13 @@ Approver `kwh8121`은 정합화 증거를 근거로 DG0 범위에 한정하여 `
 
 이 절은 DG0 정합화 작업을 실행하기 위한 사람 결정 기록이다. DG0 통과 판정이 아니며, DG1 이상 Gate 의존 구현을 시작할 근거로 사용하지 않는다.
 
-| 결정                    | 승인값                           | 적용 기록                                                                                                                                                                                                            |
-| ----------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1-A 키움 선정 계약 처리 | A1 legacy 격리                   | `46cf6e8`: 키움 선정 계약과 관련 테스트를 legacy 경로로 이동하고, v1.7 경로에는 KRX 선정 원천 계약만 둔다.                                                                                                           |
-| 1-B 코드 격리 범위      | B1 선정 원천 계약만              | `46cf6e8`: 전략·백테스트·Scanner·위험·전향평가·리서치·대시보드 UI는 이번 코드 이동 대상에서 제외하고, v1.7 완료 증거에서도 제외한다.                                                                                 |
-| 2 헌법 VII.5            | 2A' 단계별 GREEN 유지 및 #6 분리 | `9861db4` 및 2026-09-15 kwh8121 후속 승인: #6-A 현재 master 차단과 #6-B 미래 가격·상태 차단을 모두 P0-02 완료 조건의 최초 RED→GREEN으로 두고, DG2.5에서는 과거 재현 Gate 차원의 재검증을 수행한다고 헌법에 반영했다. |
-| 3 Spec Kit              | 3A' 초기화 + 역할 정정           | `7b4cc1b`: `speckit-analyze`와 `speckit-converge`만 보조 도구로 남기며, `tasks.md`는 정본이 아닌 파생 색인으로 둔다.                                                                                                 |
-| 4 migration 적용 여부   | 4A Owner 읽기 전용 조회          | 로컬 저장소에는 `supabase/` 디렉터리와 추적 환경 파일이 없고 legacy `migrations/`만 있다. 실제 Supabase SQL 조회는 Owner 권한으로 판정 전 별도 확인한다.                                                             |
+| 결정                    | 승인값                           | 적용 기록                                                                                                                                                                                                                                                                                         |
+| ----------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1-A 키움 선정 계약 처리 | A1 legacy 격리                   | `46cf6e8`: 키움 선정 계약과 관련 테스트를 legacy 경로로 이동하고, v1.7 경로에는 KRX 선정 원천 계약만 둔다.                                                                                                                                                                                        |
+| 1-B 코드 격리 범위      | B1 선정 원천 계약만              | `46cf6e8`: 전략·백테스트·Scanner·위험·전향평가·리서치·대시보드 UI는 이번 코드 이동 대상에서 제외하고, v1.7 완료 증거에서도 제외한다.                                                                                                                                                              |
+| 2 헌법 VII.5            | 2A' 단계별 GREEN 유지 및 #6 분리 | `9861db4` 및 [2026-09-15 kwh8121 후속 승인 확인](https://github.com/kwh8121/investment/pull/3#issuecomment-5674813360): #6-A 현재 master 차단과 #6-B 미래 가격·상태 차단을 모두 P0-02 완료 조건의 최초 RED→GREEN으로 두고, DG2.5에서는 과거 재현 Gate 차원의 재검증을 수행한다고 헌법에 반영했다. |
+| 3 Spec Kit              | 3A' 초기화 + 역할 정정           | `7b4cc1b`: `speckit-analyze`와 `speckit-converge`만 보조 도구로 남기며, `tasks.md`는 정본이 아닌 파생 색인으로 둔다.                                                                                                                                                                              |
+| 4 migration 적용 여부   | 4A Owner 읽기 전용 조회          | 로컬 저장소에는 `supabase/` 디렉터리와 추적 환경 파일이 없고 legacy `migrations/`만 있다. 실제 Supabase SQL 조회는 Owner 권한으로 판정 전 별도 확인한다.                                                                                                                                          |
 
 승인 정본 계획은 `docs/plan/2026-09-15-dg0-alignment.md`다. 기존 초안 `docs/superpowers/plans/2026-09-15-etf-price-signal-mvp-v17-dg0-alignment.md`는 정본 승격 후 제거해 중복 사본을 남기지 않는다.
 
@@ -149,7 +149,7 @@ PRD §15의 본문은 제품 사실의 유일한 정본으로 유지한다. 아�
 - 작업 4 GREEN: `specify init --here --force --non-interactive --integration claude --ignore-agent-tools` 전후 기존 tracked `.claude/agents`, `.claude/commands`, `.claude/hooks`, `.claude/settings.local.json` diff 없음. `SPECIFY_FEATURE_DIRECTORY=docs/plan/gates/speckit/dg0-v17 .specify/scripts/bash/check-prerequisites.sh --json --require-spec --require-tasks --include-tasks`, `npm run check-all`, `git diff --check` PASS.
 - Spec Kit 보조 증거: `docs/plan/gates/speckit/dg0-v17/analyze.md`, `docs/plan/gates/speckit/dg0-v17/tasks.md`. 이 보고서는 실제 `/speckit-analyze` 또는 `/speckit-converge` 실행 출력이 아니라 설치된 repo-local skill 항목을 따른 수동 자체 점검이며, 이번 증거에는 converge 실행에 근거한 "잔여 갭 없음" 판정이 없다.
 - migration 적용 여부: 로컬 저장소에서 `supabase/` 디렉터리와 추적 환경 파일은 발견되지 않았고, legacy SQL은 `migrations/001_task005_korean_etf_pipeline.sql`, `migrations/002_task007_strategy_scorecards.sql`만 존재한다. 실제 Supabase 프로젝트·테이블 존재 여부는 이 세션에서 조회하지 않았으며, Owner가 판정 전 읽기 전용 SQL로 확인해야 한다.
-- PR/CI 증거: PR #3(`https://github.com/kwh8121/investment/pull/3`)을 생성했다. 리뷰 코멘트에 제공된 사실 기준으로 GitHub Actions Quality run 34919904846은 원격 head `36c1ac4`에서 Build application, browser QA, repository checks 성공을 기록했다. 이후 로컬 후속 커밋(`1ee2b87`, `5e3512a`)은 이 CI run의 대상이 아니며, 새 커밋이 push되면 최신 GitHub Actions 결과를 다시 확인한다. 로컬 `npm run build`는 기존 Turbopack 포트 바인딩 환경 오류 때문에 GREEN으로 주장하지 않는다.
+- PR/CI 증거: PR #3([DG0: v1.7 계약 정합화](https://github.com/kwh8121/investment/pull/3))은 merge commit `4dadc135bc5ae1afded8c19d7fc348bc059dfae8`으로 병합됐다. 2026-09-15에 GitHub API로 직접 확인한 [Quality run 34928528475](https://github.com/kwh8121/investment/actions/runs/34928528475)는 PR 최종 head `94e03ef7f6676117421db83a8580487b3cad93af`에서 `completed`·`success`이며 Build application, browser QA, repository checks를 통과했다. 이 CI 증거는 DG0 정합화 변경에만 해당하며, 로컬 `npm run build`는 기존 Turbopack 포트 바인딩 환경 오류 때문에 GREEN으로 주장하지 않는다.
 
 ## DG0 §11 체크리스트와 사람 결정 기록
 
@@ -169,14 +169,14 @@ PRD §15의 본문은 제품 사실의 유일한 정본으로 유지한다. 아�
 ### 기록된 사람 결정
 
 1. 키움 선정 원천 계약과 이를 통과 조건으로 삼는 CI `test:gate-validation` 단계 및 `check-all`의 `status:check`를 v1.7 구현 경로에서 격리하고, KRX 선정 계약으로 교체하는 작업을 승인했다.
-2. 헌법 VII.5는 단계별 GREEN 유지로 개정한다. 2026-09-15 kwh8121의 후속 승인에 따라 #6-A 현재 master 차단과 #6-B 미래 가격·상태 차단은 모두 P0-02 완료 조건에서 최초 GREEN으로 증명하고, DG2.5에서는 과거 재현 Gate 차원의 미래 접근 차단을 재검증한다.
+2. 헌법 VII.5는 단계별 GREEN 유지로 개정한다. [2026-09-15 kwh8121의 후속 승인 확인](https://github.com/kwh8121/investment/pull/3#issuecomment-5674813360)에 따라 #6-A 현재 master 차단과 #6-B 미래 가격·상태 차단은 모두 P0-02 완료 조건에서 최초 GREEN으로 증명하고, DG2.5에서는 과거 재현 Gate 차원의 미래 접근 차단을 재검증한다.
 3. Spec Kit은 초기화하되 `speckit-analyze`와 `speckit-converge`만 보조 도구로 사용한다. `tasks.md`는 정본이 아닌 파생 색인과 converge 잔여 갭 기록이다.
 4. 기존 migration 파일의 실제 적용 여부는 Owner가 읽기 전용으로 확인하고, 적용된 migration은 수정·삭제하지 않는다.
 
 ## DG0 판정 후 인계 사항
 
 - 실제 Supabase 프로젝트·테이블 존재 여부는 DG1의 자료 검사와 새 migration 계획에서 Owner가 읽기 전용으로 확인한다.
-- PR #3은 병합됐으며, 후속 Gate 증거에는 해당 최신 CI 결과를 직접 연결한다.
+- PR #3의 [Quality run 34928528475](https://github.com/kwh8121/investment/actions/runs/34928528475)는 최종 head `94e03ef`에서 통과했으며, 위 PR/CI 증거에 직접 연결했다.
 
 ## 판정 경계
 

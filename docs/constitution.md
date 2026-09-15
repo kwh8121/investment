@@ -1,9 +1,9 @@
 # ETF Price Signal MVP Constitution
 
-> **Constitution Version:** 0.2.0 (DRAFT)
+> **Constitution Version:** 0.2.0 (DRAFT)<br>
 > **Source of Truth:** `ETF_Price_Signal_MVP_PRD_v1_7_Final.md` — 구현 기준 확정본  
 > **Ratified:** [미정 — 사람 승인 후 기입]  
-> **Last Amended:** 2026-09-15 — VII.5 단계별 GREEN 유지로 개정, #6-B를 P0-02 완료 조건으로 정합화, Gate 검증 도구 역할 정정 (영향: 적용 대상, Art. III.6, Art. VII.5, Development Workflow; 근거: PRD §12.2·§14·P0-02, 2026-09-15 kwh8121 승인, Spec Kit 1.0.6 도구 동작)
+> **Last Amended:** 2026-09-15 — VII.5 단계별 GREEN 유지로 개정, #6-B를 P0-02 완료 조건으로 정합화, Gate 검증 도구 역할 정정 (영향: 적용 대상, Art. III.6, Art. VII.5, Development Workflow; 근거: PRD §12.2·§14·P0-02, [2026-09-15 kwh8121 승인 확인](https://github.com/kwh8121/investment/pull/3#issuecomment-5674813360), Spec Kit 1.0.6 도구 동작)<br>
 > **적용 대상:** Gate 문서의 §11 체크리스트·§15 추적 표와 Spec Kit `/speckit-analyze` · `/speckit-converge`의 판정 근거이자, Superpowers 모든 서브에이전트 브리프의 Global Constraints
 > 이 문서는 PRD를 대체하지 않는다. PRD에서 **위반 시 프로젝트 자체가 무효가 되는 조항**만 헌법 수준으로 끌어올린 것이다. 헌법과 PRD가 충돌하면 PRD 원문이 우선하고 헌법을 개정한다.
 
