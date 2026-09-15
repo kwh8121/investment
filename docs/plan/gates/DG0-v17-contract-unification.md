@@ -127,7 +127,7 @@ PRD §15의 본문은 제품 사실의 유일한 정본으로 유지한다. 아�
 
 이 절은 PR #2 병합 이후 `feature/dg0-alignment` 브랜치에서 수행한 DG0 정합화 작업의 로컬 증거다. 원격 검토와 CI는 PR #3에서 추적한다.
 
-- DG0 정합화 로컬 커밋:
+- 이 증거에서 참조하는 선행 구현·보정 커밋:
   - `c36eeb9`: DG0 정합화 실행 계획 승인 기록
   - `a58b3a3`: DG0 계획 리뷰 수정 반영
   - `46cf6e8`: v1.7 선정 원천 계약 격리
@@ -137,6 +137,7 @@ PRD §15의 본문은 제품 사실의 유일한 정본으로 유지한다. 아�
   - `7b4cc1b`: Spec Kit 역할 정정과 DG0 보조 보고 추가
   - `6f244dd`: Spec Kit 보조 도구 범위 제한
   - `36c1ac4`: DG0 정합화 증거 제출 기록
+- 이 Gate 증거와 ROADMAP 증거 문서 자체의 후속 보정 커밋은 Git 기록을 정본으로 삼으며, 자기 참조 목록을 만들지 않기 위해 이 목록에 재귀적으로 추가하지 않는다.
 - 작업 1 RED/GREEN: `test/v17-selection-source-contract.test.ts`를 RED로 추가한 뒤 `src/lib/etf/selection-source.ts`와 legacy 이동으로 GREEN. `npm run test:legacy`, `npm run status:check`, `npm run check-all`, `git diff --check` PASS.
 - 작업 2 RED/GREEN: `status:check`의 legacy import 차단 가드를 RED로 추가한 뒤 `test/project-status.test.ts`를 v1.7 상태 검사로 교체하고 legacy 스냅샷 검사를 `test/legacy/legacy-gate-status.test.ts`로 이관. `npm run status:check`, `npm run test:v17-contract`, `npm run test:legacy`, `npm run check-all`, `git diff --check` PASS.
 - 작업 3 GREEN: `docs/constitution.md` 0.2.0 개정 후 grep 확인, `npm run check-all`, `git diff --check` PASS.
