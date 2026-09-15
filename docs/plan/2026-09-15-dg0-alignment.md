@@ -1,6 +1,6 @@
 # DG0 정합화 작업 실행 계획 (승인본)
 
-> **에이전트 작업자용:** 필수 하위 스킬은 `superpowers:subagent-driven-development`(권장) 또는 `superpowers:executing-plans`다. 작업 단위로 실행하고, 진행 상태는 체크박스(`- [ ]`)로 기록한다.
+> **에이전트 작업자용:** DG0 작업은 `superpowers:using-git-worktrees` → `superpowers:subagent-driven-development` → `superpowers:test-driven-development` → `superpowers:requesting-code-review` → `superpowers:finishing-a-development-branch` 순서를 필수 체인으로 따른다. `superpowers:executing-plans`는 이 체인을 대체하지 않으며, SDD 실행이 불가능할 때 사람 승인과 편차 기록이 있는 경우에만 보조 절차로 쓴다. 작업 단위로 실행하고, 진행 상태는 체크박스(`- [ ]`)로 기록한다.
 >
 > **상태 (2026-09-15):** 승인됨. 작업 0에서 사람 결정 1~4를 기록했고, 이 파일을 `docs/plan/2026-09-15-dg0-alignment.md` 정본으로 승격했다. 작업 1 이후는 별도 worktree에서 이 정본 계획을 기준으로 실행한다.
 
@@ -202,11 +202,11 @@ git mv src/lib/etf/collection.ts src/lib/legacy/etf/collection.ts
 git mv src/lib/etf/gate-validation.ts src/lib/legacy/etf/gate-validation.ts
 git mv test/etf-collection.test.ts test/legacy/etf-collection.test.ts
 git mv test/gate-validation.test.ts test/legacy/gate-validation.test.ts
-sed -i "s#'../src/lib/etf/collection.ts'#'../../src/lib/legacy/etf/collection.ts'#; s#'../src/lib/etf/gate-validation.ts'#'../../src/lib/legacy/etf/gate-validation.ts'#" test/legacy/etf-collection.test.ts test/legacy/gate-validation.test.ts
-sed -i "s#'../src/lib/etf/gate-validation.ts'#'../src/lib/legacy/etf/gate-validation.ts'#" test/project-status.test.ts
+git diff -- test/legacy/etf-collection.test.ts test/legacy/gate-validation.test.ts test/project-status.test.ts   # import 변경 전 상태 확인
 ```
 
 `src/lib/legacy/etf/gate-validation.ts`의 `from './collection.ts'`는 두 파일이 함께 이동하므로 그대로 둔다.
+이후 import 경로 변경은 `apply_patch`로 정·역패치가 가능한 작은 패치로 수행한다.
 
 - [ ] **7단계: npm 스크립트 수정**
 
@@ -401,10 +401,11 @@ npm run test:legacy     # 기대: tests 29, pass 29, fail 0
 - [ ] **6단계: 상태 검사가 잘못된 표기를 잡는지 확인 (커밋하지 않음)**
 
 ```bash
-cp docs/ROADMAP-v1.7.md /tmp/roadmap.bak
-sed -i 's/^| DG0                     | 증거 준비 중         |/| DG0                     | 통과                 |/' docs/ROADMAP-v1.7.md
+git diff --exit-code docs/ROADMAP-v1.7.md   # 기대: 출력 없음
+# apply_patch로 DG0 상태를 임시로 `통과`로 바꾸는 정패치를 적용한다.
 npm run status:check    # 기대: pass 3, fail 1 (판정 기록 없이 '통과' 표기)
-cp /tmp/roadmap.bak docs/ROADMAP-v1.7.md && git diff --exit-code docs/ROADMAP-v1.7.md
+# apply_patch로 같은 줄을 원래 값으로 되돌리는 역패치를 적용한다.
+git diff --exit-code docs/ROADMAP-v1.7.md   # 기대: 출력 없음
 ```
 
 2026-09-15 시험 실행에서, 판정 기록 없이 `통과` 표기, Go 기록 후 ROADMAP 미갱신은 모두 실패하고, Go 기록과 `통과` 표기가 함께 있으면 통과함을 확인했다.
@@ -498,8 +499,12 @@ git diff -- .claude/agents .claude/commands .claude/hooks .claude/settings.local
 - [ ] **3단계: 사용하지 않는 스킬 제거와 헌법 이중화 방지**
 
 ```bash
-rm -r .claude/skills/speckit-{checklist,clarify,constitution,implement,plan,specify,tasks,taskstoissues}
-rm .specify/memory/constitution.md
+pwd   # 기대: /tmp/stock-market-dg0-alignment
+git status --short
+find .claude/skills -maxdepth 1 -type d -name 'speckit-*' -print | sort
+find .specify/memory -maxdepth 1 -type f -name 'constitution.md' -print
+# 불필요한 speckit-* 디렉터리가 방금 생성된 untracked 대상임이 확인된 뒤에만 명시 경로 목록으로 삭제한다.
+# 기존 추적 파일 또는 생성 주체가 불명확한 파일이면 삭제하지 않고 중단해 Gate 증거에 기록한다.
 ln -s ../../docs/constitution.md .specify/memory/constitution.md
 ls .claude/skills   # 기대: speckit-analyze  speckit-converge
 ```
