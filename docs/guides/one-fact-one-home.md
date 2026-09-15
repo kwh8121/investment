@@ -72,9 +72,9 @@
 ### Stage 4 — 구현·Gate 검증
 
 - Dev가 PR·실행 결과·Gate 증거 링크를 연결한 뒤 `verify-request`로 전환한다.
-- Verifier는 diff, 실행 결과, PRD §11 checklist, PRD §15 analyze 결과와 `docs/plan/gates/`의 증거를 대조한다.
+- Verifier는 diff, 실행 결과, Gate 문서의 PRD §11 체크리스트·§15 추적 표, analyze/converge 보조 보고와 `docs/plan/gates/`의 증거를 대조한다.
 - 통과한 구현 검토는 `verify-passed`로 표시할 수 있다. 그러나 DG0~DG4의 통과 판정은 사람만 내리며, 실제 판정과 근거는 Gate 문서에 기록한다.
-- 재작업은 `verify-request`를 유지하거나 작업을 `plan-draft`로 되돌린다. 정책·계약 문제는 `/speckit.converge`와 사람 승인 후 새 `rule_version` 작업으로 분리한다.
+- 재작업은 `verify-request`를 유지하거나 작업을 `plan-draft`로 되돌린다. 정책·계약 문제는 `/speckit-converge`와 사람 승인 후 새 `rule_version` 작업으로 분리한다.
 
 ### Stage 5 — 배포 또는 다음 DG 승인
 
@@ -136,7 +136,7 @@
 
 ### DG Gate 전
 
-- [ ] 관련 `docs/plan/gates/` 문서에 실행 결과·input manifest·checklist/analyze 링크가 있다.
+- [ ] 관련 `docs/plan/gates/` 문서에 실행 결과·input manifest·§11 체크리스트·§15 추적 표와 analyze/converge 보고 링크가 있다.
 - [ ] PRD §11 및 §15를 대조했다.
 - [ ] 사람 판정 전에는 후속 DG를 시작하거나 통과를 선언하지 않았다.
 

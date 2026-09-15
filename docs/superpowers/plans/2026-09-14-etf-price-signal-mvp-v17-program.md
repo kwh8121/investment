@@ -21,7 +21,7 @@
 - 모든 계산 산출물은 PRD §9.1의 버전·해시·실행 식별 필드를 갖고, 원본 응답은 민감정보 제거 후 상태와 무관하게 보존한다.
 - 동일 input manifest·calendar/rule version은 100% 같은 유니버스·지표·순위·후보를 만든다. 정렬과 퍼센타일 규칙은 PRD 부록 A를 그대로 구현한다.
 - DG0~DG4의 통과 판정, 정책값 변경, 수동 날짜 변경, `DRAFT → PUBLISHED`, 식별자 수동 병합, 손실 단계 재개는 사람 전용 결정이다. 에이전트는 증거만 제출한다.
-- 각 DG는 먼저 §12.2 필수 회귀 테스트를 RED로 추가하고, 구현 후 GREEN을 증명한다. DG 종료 때 `/speckit.checklist`와 `/speckit.analyze` 결과를 Gate 증거로 제출한다.
+- 각 DG는 먼저 §12.2 필수 회귀 테스트를 RED로 추가하고, 구현 후 GREEN을 증명한다. DG 종료 때 Gate 문서의 §11 체크리스트·§15 추적 표와 `/speckit-analyze`·`/speckit-converge` 보고를 Gate 증거로 제출한다.
 
 ---
 
@@ -78,7 +78,7 @@
 - [ ] 기존 `src/lib/etf/**`와 `test/**`를 §12.2 테스트 14개 및 §15 기준에 매핑하고, v1.7 계약을 실제로 증명하는 테스트와 폐기/격리할 테스트를 분리한다.
 - [ ] `docs/ROADMAP-v1.7.md`를 v1.7의 DG0~DG4 순서와 현재 증거 상태로 유지한다. 이전 `docs/ROADMAP.md`는 역사 문서로 보존하며 완료 표기를 승계하지 않는다.
 - [ ] `docs/architecture-v1.7.md`를 국내 KRX 정본, 키움의 제한된 역할, 미래 접근 분리, 상태 분리, 불변 버전 계약으로 유지한다. 이전 `docs/architecture.md`는 역사 문서로 보존한다.
-- [ ] DG0 체크리스트와 `/speckit.analyze` 수용기준 매핑을 작성해 사람에게 판정 자료로 제출한다.
+- [ ] DG0 §11 체크리스트와 §15 수용기준 추적 표를 작성하고 `/speckit-analyze` 보고를 연결해 사람에게 판정 자료로 제출한다.
 - [ ] `npm run check-all`과 `npm run build`를 실행하고 결과를 Gate 증거에 기록한다.
 - [ ] Commit: `docs: align canonical execution artifacts with ETF signal PRD v1.7`.
 
@@ -111,7 +111,7 @@
 - [ ] PRD §3.2~§3.5 우선순위와 48시간 대기, 완전 수신 anchor, 중복·기준일 불일치 검사를 최소 구현한다.
 - [ ] raw 응답의 SHA-256·redaction·불변 저장과 완료 날짜 재적재 없는 재개를 구현한다.
 - [ ] 대표 5종 KRX/키움 대조, 식별자 충돌 검사, 필드 단위/부호/결측 증거를 연결한다.
-- [ ] 테스트를 GREEN으로 만들고 `check-all`·build 결과 및 `/speckit.checklist`·`/speckit.analyze` 결과를 DG1 증거로 제출한다.
+- [ ] 테스트를 GREEN으로 만들고 `check-all`·build 결과 및 §11 체크리스트·§15 추적 표와 `/speckit-analyze`·`/speckit-converge` 보고를 DG1 증거로 제출한다.
 
 ### Task 4: DG2 — 원시 구간 백필·달력·warm-up·diff
 
@@ -175,7 +175,7 @@
 - [ ] 평가 모듈만 1·2·4·8주 이후 가격을 읽도록 분리하고 `NOT_MATURED`, `CENSORED_MISSING`, `CENSORED_DELISTED_OR_UNAVAILABLE`을 보존한다.
 - [ ] 실제 데이터에서 만기·검열·분배/기업행사 의심·모든 분모·비중첩 블록 수를 산출한다.
 - [ ] 같은 manifest·calendar/rule version을 두 번 실행해 유니버스·지표·순위·후보가 byte-for-byte 동등함을 검증한다.
-- [ ] 실패 원인이 버그면 `systematic-debugging` 후 같은 `rule_version`으로 재실행한다. 계약/정책 문제면 `/speckit.converge`로 새 버전 태스크를 만들고 사람 승인을 기다린다. 수익률 기반 자동 튜닝은 금지다.
+- [ ] 실패 원인이 버그면 `systematic-debugging` 후 같은 `rule_version`으로 재실행한다. 계약/정책 문제면 `/speckit-converge`로 새 버전 태스크를 만들고 사람 승인을 기다린다. 수익률 기반 자동 튜닝은 금지다.
 
 ### Task 9: P0-06 UI·주간 발행 및 DG3
 
@@ -217,7 +217,7 @@
 
 1. 각 DG 계획은 코드 변경 전에 해당 테스트의 failing assertion과 정확한 실행 명령을 포함한다.
 2. 구현자는 RED 출력 → 최소 구현 → 대상 테스트 GREEN → `npm run check-all` → `npm run build` 순서의 원문 결과를 Gate 증거에 링크한다.
-3. `/speckit.checklist`는 해당 DG §11 조건을, `/speckit.analyze`는 §15의 15개 기준 커버리지를 대조한다. 둘은 사람의 Gate 판정을 대체하지 않는다.
+3. Gate 문서의 §11 체크리스트는 해당 DG 통과 조건을, §15 추적 표는 15개 기준 커버리지를 대조한다. `/speckit-analyze`(문서 정합성)와 `/speckit-converge`(코드 대조)는 보조 보고이며, 모두 사람의 Gate 판정을 대체하지 않는다.
 4. DG2.5가 실패하면 자동 튜닝하지 않는다. 원인/수정/새 버전 여부를 기록하고 헌법 Article VII.3 절차를 따른다.
 5. 완료 보고에는 변경 파일, §12.2/§15 매핑, 실행 명령 결과, 남은 인간 승인 항목만 적는다.
 

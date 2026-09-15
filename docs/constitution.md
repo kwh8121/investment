@@ -227,7 +227,7 @@
     
 *   **Gate 검증:** DG 종료 시 Gate 문서의 §11 체크리스트로 통과 조건을, §15 추적 표로 수용기준 15개 커버리지를 대조한다. `/speckit-analyze`(PRD·DG 계획·헌법 정합성)와 `/speckit-converge`(코드 대조) 보고를 보조 자료로 연결한다. 결과는 사람에게 제출.
     
-*   **DG2.5 실패 루프:** `systematic-debugging` → 원인이 버그면 수정 후 동일 `rule_version` 재실행, 원인이 계약이면 `/speckit.converge`로 새 `rule_version` 태스크 생성 → 사람 승인 → 재실행.
+*   **DG2.5 실패 루프:** `systematic-debugging` → 원인이 버그면 수정 후 동일 `rule_version` 재실행, 원인이 계약이면 `/speckit-converge`로 새 `rule_version` 태스크 생성 → 사람 승인 → 재실행.
     
 *   **브레인스토밍 억제:** 모든 세션 첫 메시지에 "스펙은 PRD v1.7로 확정, 재설계·재서술 금지" 명시.
     
